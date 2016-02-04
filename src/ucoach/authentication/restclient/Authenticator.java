@@ -10,7 +10,7 @@ import javax.ws.rs.client.WebTarget;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
-import ucoach.authentication.util.JsonParser;
+import ucoach.util.JsonParser;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

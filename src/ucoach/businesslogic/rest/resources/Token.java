@@ -1,7 +1,7 @@
 package ucoach.businesslogic.rest.resources;
 
 import ucoach.authentication.restclient.*;
-import ucoach.authorization.Authorization;
+import ucoach.util.Authorization;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -41,7 +41,6 @@ public class Token {
     public Response getPerson(@Context HttpHeaders headers, @PathParam("token") String token) throws Exception {		
 		Authorization.validateRequest(headers);
 		Response res;
-		
 		if(! Authorization.validateRequest(headers)){
 			Response r = Response.status(401).build();
 			return r;

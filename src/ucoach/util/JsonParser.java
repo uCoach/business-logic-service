@@ -1,4 +1,4 @@
-package ucoach.authentication.util;
+package ucoach.util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
