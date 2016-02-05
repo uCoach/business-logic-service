@@ -19,8 +19,9 @@ public class Authorization {
 	 * @return
 	 */
 	public static boolean validateRequest(HttpHeaders headers) {
-		try {
-			
+		if(headers == null)
+			return false;
+		try{
 			List<String> keyList = headers.getRequestHeader("Authorization");
 			String authKey = "";
 			if(keyList != null){
@@ -36,7 +37,7 @@ public class Authorization {
 				return true;
 			}
 		
-		} catch (Exception e) {e.printStackTrace(); System.out.println("Exception");}
+		} catch (Exception e) {e.printStackTrace(); System.out.println("Exception"); }
 		
 		return false;
 	}
