@@ -8,9 +8,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
+import ucoatch.servicevars.ServiceVars;
+
 public class Authorization {
 
-	private static final String AUTHORIZATION_KEY = "business_authorization_key";
+	private static final String AUTHORIZATION_KEY = ServiceVars.getBusinessLogicAuthorizationKey;
 	
 	/**
 	 * Method to authenticate key

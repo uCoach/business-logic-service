@@ -23,6 +23,12 @@ public class User {
 	
 	static JsonParser jsonParser = new JsonParser();
 	
+	/**
+	 * Verify the client authentication
+	 * Add a new User
+	 * @return the User Object with its new ID
+	 * @throws Exception 
+	 */
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON })
 	public Response registerUser(@Context HttpHeaders headers, String requestBody) throws Exception{
@@ -43,6 +49,12 @@ public class User {
 		return rs;
 	}
 	
+	/**
+	 * Verify the client authentication
+	 * Updates the User for the requester {ID}
+	 * @return the updated User Object
+	 * @throws Exception 
+	 */
 	@Path("{ID}")
 	@PUT
 	@Consumes({MediaType.APPLICATION_JSON })
@@ -58,6 +70,11 @@ public class User {
 		return rs;
 	}
 	
+	/**
+	 * Verify the client authentication
+	 * @return the User from the given ID
+	 * @throws Exception 
+	 */
 	@Path("{ID}")
 	@GET
 	@Produces({MediaType.APPLICATION_JSON })
@@ -77,16 +94,83 @@ public class User {
 		return rs;
 	}
 	
+	/**
+	 * Just object Request
+	 * Implements the methods for the current user regarding all the measures with the type {measure}
+	 * Updates the User for the requester {ID}
+	 */
 	@Path("{ID}/measurelist/{measure}")
-	public HealthMeasureList getSpecificMeasureFromPerson(@Context HttpHeaders headers,@PathParam("ID") int id, @PathParam("measure") String measure){
+	public HealthMeasureList getHealthMeasureList(@PathParam("ID") int id, @PathParam("measure") int measureTypeId){
 		
-		HealthMeasureList hml = new HealthMeasureList(id, measure);
+		HealthMeasureList hml = new HealthMeasureList(id, measureTypeId);
 		return hml;		
 	}
 	
+	/**
+	 * Just object Request
+	 * Implements the methods for the current user regarding all the measures
+	 * Updates the User for the requester {ID}
+	 */
 	@Path("{ID}/measurelist/")
-	public HealthMeasureList getMeasureFromPerson(@Context HttpHeaders headers, @PathParam("ID") int id){		
+	public HealthMeasureList getAllHealthMeasureLists( @PathParam("ID") int id){		
 		HealthMeasureList hml = new HealthMeasureList( id);
 		return hml;		
 	}
+	
+	/**
+	 * Just object Request
+	 * Implements the methods for the current user regarding the measure {IDMeasure}
+	 */
+	@Path("{ID}/measure/{IDMeasure}")
+	public HealthMeasure getHealthMeasure (@PathParam("ID") int idUser, @PathParam("ID") int idMeasure){
+		HealthMeasure hm = new HealthMeasure(idUser, idMeasure);
+		return hm;
+	}
+	
+	/**
+	 * Just object Request
+	 * Implements the methods for the current user regarding single new measure (POST)
+	 */
+	@Path("{ID}/measure")
+	public HealthMeasure getHealthMeasure (@PathParam("ID") int idUser){
+		HealthMeasure hm = new HealthMeasure(idUser);
+		return hm;
+	}
+	
+	/**
+	 * Just object Request
+	 * Implements the methods for the current user regarding single new GOAL (POST)
+	 * Implements the metos for the current user regarding undefined GOALS
+	 */
+	@Path("{ID}/goal")
+	public Goal getGoal(@PathParam("ID") int idUser){
+		Goal g = new Goal(idUser);
+		return g;
+	}
+	
+	/**
+	 * Just object Request
+	 * Implements the methods regarding a defined Goal
+	 */
+	@Path("{ID}/goal/{goalId}")
+	public Goal getGoal(@PathParam("ID") int idUser, @PathParam("goalId") int idGoal){
+		Goal g = new Goal(idUser, idGoal);
+		//System.out.println("abobora"+idGoal);
+		return g;
+	}
+	
+	/**
+	 * Just object Request
+	 * Implements the methods for the current user regarding single new GOAL (POST)
+	 * Implements the metos for the current user regarding undefined GOALS
+	 */
+	
+	@Path("{idUser}/goallist/{idType}")
+	public Goal getGoalsByType(@PathParam("idUser") int idUser, @PathParam("idUser") int idType){
+		Goal g = new Goal(idUser, idType);
+		return g;
+	}
+	
+	
+	
 }

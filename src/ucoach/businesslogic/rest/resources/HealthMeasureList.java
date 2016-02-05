@@ -15,20 +15,26 @@ import ucoach.util.Authorization;
 
 public class HealthMeasureList {
 	private int id;
-	private String measure;
+	private int measureTypeId;
 	HttpHeaders headers;
 	
-	public HealthMeasureList(int id, String measure){
+	public HealthMeasureList(int id, int measureTypeId){
 		this.id = id;
-		this.measure = measure;
+		this.measureTypeId = measureTypeId;
 	}
 	public HealthMeasureList(int id){
 		this.id = id;
-		this.measure = null;
+		this.measureTypeId = 0;
 		
 	}
 	
-	
+	/**
+	 * Verify the client authentication
+	 * In case the MeasureTypeId is defined, includes on the response only that kind of measure
+	 * In case the MeasureTypeId id not defined, includes all the measures for that person
+	 * @return the List of HealthMeasures into a JSON response
+	 * @throws Exception 
+	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON })
 	public Response getMeasures(@Context HttpHeaders headers){
@@ -38,15 +44,15 @@ public class HealthMeasureList {
 			return response;
 		}
 		
-		if(measure==null){
+		if(measureTypeId==0){
 			org.json.JSONObject obj = new org.json.JSONObject();
 			obj.put("user", id);
-			obj.put("type", "height");
+			obj.put("idType", 12);
 			obj.put("value", "99");
 			obj.put("measurement", "Kg");
 			org.json.JSONObject obj2 = new org.json.JSONObject();
 			obj2.put("user", id);
-			obj2.put("type", "weight");
+			obj2.put("idType", "weight");
 			obj2.put("value", "1000");
 			obj2.put("measurement", "BPM");			
 			List<JSONObject> ljs = new ArrayList();
@@ -59,7 +65,7 @@ public class HealthMeasureList {
 		}else{
 			org.json.JSONObject obj = new org.json.JSONObject();
 			obj.put("user", id);
-			obj.put("type", measure);
+			obj.put("type", measureTypeId);
 			obj.put("value", "1000");
 			obj.put("measurement", "BPM");		
 			response = Response.accepted(obj.toString()).build();		

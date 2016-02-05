@@ -11,6 +11,7 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import ucoach.util.JsonParser;
+import ucoatch.servicevars.ServiceVars;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -18,8 +19,7 @@ import javax.ws.rs.client.ClientBuilder;
 
 public class Authenticator {
 	static JsonParser jsonParser = new JsonParser();
-	
-	
+
 	
 	/**
 	 * Starts a new connection with the authentication server
@@ -48,7 +48,7 @@ public class Authenticator {
 	}
 	
 	private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://192.168.0.100:5700/auth/").build();
+        return UriBuilder.fromUri(ServiceVars.getAuthenticationApiAnddress).build();
     }
 }
 
