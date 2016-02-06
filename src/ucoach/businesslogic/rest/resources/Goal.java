@@ -82,7 +82,7 @@ public class Goal {
 		obj.put("id", goalId);
 		obj.put("frequency", "daily");
 		obj.put("objective", "100");
-		obj.put("value", "100");
+		obj.put("value", "100.0");
 		obj.put("due_date", "2016/03/01");
 		obj.put("achieved", "No");
 		obj.put("hmType", 1);
