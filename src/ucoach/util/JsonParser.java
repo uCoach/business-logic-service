@@ -49,6 +49,10 @@ public class JsonParser {
 			return Double.toString(jsonObj.getDouble(expr));
 		} catch (JSONException e) {}
 		
+		try {
+			return jsonObj.getJSONArray(expr)+"";
+		} catch (JSONException e) {}
+		
 		return "";
 	}
 	

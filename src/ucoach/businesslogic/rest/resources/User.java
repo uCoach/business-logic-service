@@ -13,8 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import ucoach.util.Authorization;
-import ucoach.util.JsonParser;
+import ucoach.util.*;
 
 @Path("/user")
 public class User {

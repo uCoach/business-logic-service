@@ -60,16 +60,14 @@ public class HealthMeasureList {
 			ljs.add(obj2);
 			JSONObject objs = new org.json.JSONObject();
 			objs.put("Measures", ljs);			
-			response = Response.accepted(objs.toString()).build();	
-			
+			response = Response.accepted(objs.toString()).build();				
 		}else{
 			org.json.JSONObject obj = new org.json.JSONObject();
 			obj.put("user", id);
 			obj.put("type", measureTypeId);
 			obj.put("value", "1000");
 			obj.put("measurement", "BPM");		
-			response = Response.accepted(obj.toString()).build();		
-			
+			response = Response.accepted(obj.toString()).build();					
 		}
 		return response;
 		
