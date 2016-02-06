@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ucoach.businesslogic.rest.control.Pretender;
 import ucoach.util.*;
 
 @Path("/user")
@@ -38,12 +39,7 @@ public class User {
 		}
 		
 		
-		org.json.JSONObject obj = new org.json.JSONObject();
-		obj.put("email", "dowjones@umbrella.com");
-		obj.put("name", "Robert");
-		obj.put("birthdate", "05/05/90");
-		obj.put("twitterusername", "pefabiodemelo");
-		obj.put("id", 15);				
+		org.json.JSONObject obj = Pretender.getUser();			
 		rs= Response.accepted(obj.toString()).build();
 		return rs;
 	}
@@ -83,12 +79,7 @@ public class User {
 			rs = Response.status(401).build();
 			return rs;
 		}		
-		org.json.JSONObject obj = new org.json.JSONObject();
-		obj.put("email", "dowjones@umbrella.com");
-		obj.put("name", "Robert");
-		obj.put("birthdate", "05/05/90");
-		obj.put("twitterusername", "pefabiodemelo");
-		obj.put("id", id);				
+		org.json.JSONObject obj = Pretender.getUser();	
 		rs= Response.accepted(obj.toString()).build();
 		return rs;
 	}

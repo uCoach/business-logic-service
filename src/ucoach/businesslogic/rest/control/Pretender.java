@@ -79,4 +79,28 @@ public class Pretender {
 		
 		return objs;
 	}
+	
+	public static JSONObject getSingleHealthMeasure(){
+		org.json.JSONObject obj = new org.json.JSONObject();
+		obj.put("id", 1);
+		obj.put("user", 1);
+		obj.put("date", "2016-02-05");
+		obj.put("hmType", 1);
+		obj.put("value", "1001");
+		return obj;
+	}
+	
+	public static JSONObject getUser(){
+		org.json.JSONObject obj = new org.json.JSONObject();
+		obj.put("id", 1);	
+		obj.put("email", "dowjones@umbrella.com");
+		obj.put("name", "Fred");
+		obj.put("lastname", "Flowers");
+		obj.put("birthdate", "1990-05-02");
+		//obj.put("twitterusername", "pefabiodemelo");
+		obj.put("password", "aehuaheu21432uhquahuhqu423uauh1u23");
+		
+		return obj;
+			
+	}
 }

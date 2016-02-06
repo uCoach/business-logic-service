@@ -10,8 +10,8 @@ import javax.ws.rs.client.WebTarget;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
+import ucoach.businesslogic.rest.control.ServiceVars;
 import ucoach.util.JsonParser;
-import ucoatch.servicevars.ServiceVars;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -48,7 +48,7 @@ public class Authenticator {
 	}
 	
 	private static URI getBaseURI() {
-        return UriBuilder.fromUri(ServiceVars.getAuthenticationApiAnddress).build();
+        return UriBuilder.fromUri(ServiceVars.AUTHENTICATION_API_ADDRESS).build();
     }
 }
 

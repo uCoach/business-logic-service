@@ -8,11 +8,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
-import ucoatch.servicevars.ServiceVars;
+import ucoach.businesslogic.rest.control.ServiceVars;
 
 public class Authorization {
 
-	private static final String AUTHORIZATION_KEY = ServiceVars.getBusinessLogicAuthorizationKey;
+	private static final String AUTHORIZATION_KEY = ServiceVars.BUSINESS_LOGIC_AUTHORIZATION_KEY;
 	
 	/**
 	 * Method to authenticate key

@@ -23,7 +23,7 @@ import ucoach.util.JsonParser;
  * Every seasonal goal generates one unique goal 
  */
 
-public class GoalController {
+public class GoalManager {
 	static JsonParser jsonParser = new JsonParser();
 	
 	public static JSONObject updateGoals(JSONObject jsonGoals) throws Exception{				
