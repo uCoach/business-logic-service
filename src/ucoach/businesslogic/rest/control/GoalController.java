@@ -1,4 +1,5 @@
 package ucoach.businesslogic.rest.control;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,19 +27,25 @@ public class GoalController {
 	static JsonParser jsonParser = new JsonParser();
 	
 	public static JSONObject updateGoals(JSONObject jsonGoals) throws Exception{				
+		
 		//Take the goals Array from the given JSON		
 		JSONArray goals = jsonGoals.getJSONArray("goals");
+		
 		//Take the goals one by one
 		for(int i = 0; i<goals.length(); i++){	
+			
 			//Initialize the variables
 			JSONObject goal = goals.getJSONObject(i);
-			String createdDate = goal.getString("createdDate");
-			String dueDate = goal.getString("dueDate");
+			Date createdDate = dateParser(goal.getString("createdDate"));
+			Date dueDate = dateParser(goal.getString("dueDate"));
 			int user = goal.getInt("user");
-			int hmType = goal.getInt("htType");
+			int hmType = goal.getInt("hmType");
 			String frequency = "";
 			boolean hasFrequency = false;
 			float reachedValue = 0;
+			
+			//getting the objective (>,<,>=,...)
+			String objective = goal.getString("objective");
 			
 			//Take the HM code of the goal
 			int hmId = goal.getInt("hmType");
@@ -63,44 +70,43 @@ public class GoalController {
 			 * In case it is recurrent, we will:
 			 *  	-Check if the goals were achieved for yesterday
 			 *  	-Create a new goal with the createdDate for today
-			 * 			
-			 * */
-			
-			//
+			 */
 			if(!hasFrequency){
 				reachedValue = getReachedValue(hmType, user,  createdDate,  dueDate);
+				System.out.println("DO NOT CREATE A NEW GOAL");
 			}else{
-				String today = dateFormater(new Date());
-				String yesterday = dateFormater(getYesterdayDate());
-				reachedValue = getReachedValue(hmType, user, createdDate, yesterday);
-				
+				System.out.println("CREATE A NEW GOAL");
+				Date today = new Date();
+				Date yesterday = getYesterdayDate();
+				reachedValue = getReachedValue(hmType, user, createdDate, yesterday);				
 				/*
 				 * HERE COMES THE CREATING A NEW GOAL
-				 * */
+				 */
 			}
 									
-			//getting the objective (>,<,>=,...)
-			String objective = goal.getString("objective");
+			
 			
 			//Verifying the objective, if so, update the goal to achieved
 			if(verifyObjective(objective, reachedValue, goalValue)){
 				goal.put("achieved", 1);
 				goals.put(i, goal);
-			}
-			
-			/*
-			 * HERE COMES THE UPDATE TO THE DATABASE
-			 * */
-			
+				
+				System.out.println("ACHIEVED GOAL");
+				/*
+				 * HERE COMES THE UPDATE TO THE DATABASE
+				 */
+			}			
 		}
 		//Re-wrap the Array into a JSONObject and send it
 		return new JSONObject().put("goals", goals) ;
 	}
 	
-	public static float getReachedValue(int hmType, int user, String startDate, String dueDate){		
-		
+	public static float getReachedValue(int hmType, int user, Date startDate, Date dueDate){		
+		/*
+		 * HERE COMES THE GET FOR THE hmTypeName
+		 */
 		//get the hmType name
-		String hmTypeName = "weight";	
+		String hmTypeName = "steps";	
 		//weight, steps, calories, 
 		switch (hmTypeName){
 			case "steps":
@@ -115,7 +121,7 @@ public class GoalController {
 		return 0;
 	}
 	
-	public static float sumMeasures(int hmType, int user, String startDate, String dueDate){
+	public static float sumMeasures(int hmType, int user, Date startDate, Date dueDate){
 		//take the HealthMeasures from the hmType
 		JSONObject healthMeasuresJSON = Pretender.getHealthMeasureSteps();
 		JSONArray measures = healthMeasuresJSON.getJSONArray("measures");
@@ -135,7 +141,7 @@ public class GoalController {
 		return reachedValue;
 	}
 	
-	public static float lastMeasure(int hmType, int user, String startDate, String dueDate){
+	public static float lastMeasure(int hmType, int user, Date startDate, Date dueDate){
 		//take the HealthMeasures from the hmType
 		JSONObject healthMeasuresJSON = Pretender.getHealthMeasureSteps();
 		JSONArray measures = healthMeasuresJSON.getJSONArray("measures");
@@ -147,8 +153,7 @@ public class GoalController {
 			return Float.parseFloat(value);
 		}catch(Exception e){
 			System.out.println("exception float parsing");
-		}
-		
+		}		
 		return 0;
 	}
 	
@@ -178,5 +183,16 @@ public class GoalController {
 	public static String dateFormater(Date date){
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.format(date);
+	}
+	
+	public static Date dateParser(String date){
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			return dateFormat.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			System.out.println("deu ruim");
+			return null;
+		}
 	}
 }
