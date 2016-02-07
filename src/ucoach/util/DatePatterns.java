@@ -23,7 +23,6 @@ public class DatePatterns {
 			return dateFormat.parse(date);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			System.out.println("deu ruim");
 			return null;
 		}
 	}

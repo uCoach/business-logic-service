@@ -175,7 +175,7 @@ public class User {
 	/**
 	 * Just object Request
 	 * Implements the methods for the current user regarding single new GOAL (POST)
-	 * Implements the metos for the current user regarding undefined GOALS
+	 * Implements the methods for the current user regarding undefined GOALS
 	 */
 	
 	@Path("{idUser}/goallist/{idType}")

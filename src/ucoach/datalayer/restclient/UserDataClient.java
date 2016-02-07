@@ -16,10 +16,7 @@ public class UserDataClient {
 static JsonParser jsonParser = new JsonParser();
 
 	
-	/**
-	 * Starts a new connection with the Data Layer server
-	 *  
-	 */
+	
 
 	public static Response registerUser(JSONObject userJson) throws Exception{
 		WebTarget baseTarget = DataLayerClient.getWebTarget();

@@ -24,9 +24,7 @@ public class Login {
 	private String password;
 	public Login(String user, String password){
 		this.user = user;
-		this.password = password;
-		
-		
+		this.password = password;		
 	}
 	
 	public String getToken(){
@@ -38,7 +36,6 @@ public class Login {
 		WebTarget baseTarget = getWebTarget();
 		WebTarget target = baseTarget
 				.path("login");
-		
 		try{
 			Response r = fetchPostResponse(target, "application/json", loginJson);
 			JSONObject tokenJson = new JSONObject();			
