@@ -13,7 +13,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.json.JSONObject;
+
+import ucoach.authentication.restclient.Login;
+import ucoach.businesslogic.rest.manager.JSONBuilder;
 import ucoach.businesslogic.rest.manager.Pretender;
+import ucoach.datalayer.restclient.UserDataClient;
 import ucoach.util.*;
 
 @Path("/user")
@@ -37,11 +42,29 @@ public class User {
 			rs = Response.status(401).build();
 			return rs;
 		}
+		//Try to add the user
+		Response registerResponse = UserDataClient.registerUser( new JSONObject(requestBody));
+		
+		if(registerResponse.getStatus()==200){
+			String userJson = registerResponse.readEntity(String.class);
+			jsonParser.loadJson(userJson);
+			
+			String username = jsonParser.getElement("email");
+			String password = jsonParser.getElement("password");
+			
+			Login login = new Login(username, password);
+			String token = login.getToken();
+			JSONObject finalresponse = JSONBuilder.singleValueJsonResponse(new JSONObject(userJson), token, "token");
+			rs = Response.accepted(finalresponse.toString()).build();
+			return rs;
+			
+		}else{
+			return registerResponse;
+		}
+			
+				
 		
 		
-		org.json.JSONObject obj = Pretender.getUser();			
-		rs= Response.accepted(obj.toString()).build();
-		return rs;
 	}
 	
 	/**

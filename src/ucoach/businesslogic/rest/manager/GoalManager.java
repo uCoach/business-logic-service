@@ -8,7 +8,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import ucoach.util.DatePattern;
+import ucoach.util.DatePatterns;
 import ucoach.util.JsonParser;
 
  /*
@@ -41,8 +41,8 @@ public class GoalManager {
 	
 	public static JSONObject updateGoal(JSONObject goal) throws Exception{							
 		//Initialize the variables
-		Date createdDate = DatePattern.dateParser(goal.getString("createdDate"));
-		Date dueDate = DatePattern.dateParser(goal.getString("dueDate"));
+		Date createdDate = DatePatterns.dateParser(goal.getString("createdDate"));
+		Date dueDate = DatePatterns.dateParser(goal.getString("dueDate"));
 		int user = goal.getInt("user");
 		int hmType = goal.getInt("hmType");
 		String frequency = "";
@@ -83,7 +83,7 @@ public class GoalManager {
 		}else{
 			System.out.println("CREATE A NEW GOAL");
 			Date today = new Date();
-			Date yesterday = DatePattern.getYesterdayDate();
+			Date yesterday = DatePatterns.getYesterdayDate();
 			reachedValue = getReachedValue(hmTypeName, user, createdDate, yesterday);				
 			/*
 			 * HERE COMES THE CREATING A NEW GOAL

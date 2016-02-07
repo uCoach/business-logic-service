@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DatePattern {
+public class DatePatterns {
 	public static Date getYesterdayDate(){
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -1);

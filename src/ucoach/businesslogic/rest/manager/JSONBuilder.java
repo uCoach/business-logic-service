@@ -15,5 +15,12 @@ public class JSONBuilder {
 		return singleJsonResponse(user, body, "body");
 	}
 	
+	public static JSONObject singleValueJsonResponse(JSONObject user, String singleValue, String label){
+		JSONObject json = new JSONObject();
+		json.put("user", user);
+		json.put(label, singleValue);
+		return json;
+	}
+	
 	
 }
