@@ -49,7 +49,7 @@ public class Token {
 		try{
 			Long l =  Authenticator.authenticate(token);
 			JSONObject obj = new org.json.JSONObject();
-			obj.put("userid", 2);
+			obj.put("userid", l);
 			if(l!=0){
 				res = Response.status(Status.OK).entity(obj.toString()).location(uriInfo.getAbsolutePath()).build();
 			}else{

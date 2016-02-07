@@ -13,7 +13,6 @@ public class ServiceVars {
 		= "http://192.168.0.100:5000/data/";
 	
 	public static final  String DEFAULT_KEY
-		= "default_authorization_key";
-	
+		= "default_authorization_key";	
 	
 }

@@ -24,7 +24,7 @@ public class App {
         }
         
 
-        URI BASE_URI = new URI(protocol + hostname + port+"auth/");
+        URI BASE_URI = new URI(protocol + hostname + port+"business/");
 
         System.out.println("Starting sdelab standalone HTTP server...");
         JdkHttpServerFactory.createHttpServer(BASE_URI, createApp());
