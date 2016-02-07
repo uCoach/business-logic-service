@@ -3,9 +3,6 @@ package ucoach.businesslogic.rest.resources;
 import ucoach.authentication.restclient.*;
 import ucoach.util.Authorization;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
@@ -21,6 +18,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.ws.WebServiceContext;
+
+import org.json.JSONObject;
 
 import javax.annotation.Resource;
 
@@ -39,6 +38,7 @@ public class Token {
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response getPerson(@Context HttpHeaders headers, @PathParam("token") String token) throws Exception {		
+		
 		Authorization.validateRequest(headers);
 		Response res;
 		if(! Authorization.validateRequest(headers)){
@@ -48,10 +48,14 @@ public class Token {
 		
 		try{
 			Long l =  Authenticator.authenticate(token);
+			JSONObject obj = new org.json.JSONObject();
+			obj.put("userid", 2);
 			if(l!=0){
-				res = Response.status(Status.OK).entity(l).location(uriInfo.getAbsolutePath()).build();
+				res = Response.status(Status.OK).entity(obj.toString()).location(uriInfo.getAbsolutePath()).build();
+			}else{
+				res = Response.noContent().build();
 			}
-			res = Response.noContent().build();				
+							
 		}catch(Exception e){
 			res = Response.serverError().build();
 		}

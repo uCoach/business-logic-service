@@ -10,7 +10,7 @@ import javax.ws.rs.client.WebTarget;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
-import ucoach.businesslogic.rest.control.ServiceVars;
+import ucoach.businesslogic.rest.manager.ServiceVars;
 import ucoach.util.JsonParser;
 
 import javax.ws.rs.client.Client;
@@ -38,6 +38,7 @@ public class Authenticator {
 				.path("verify")
 				.path(token);
 		try{
+			System.out.println(target);
 			Response r = target.request().accept("application/json").get();
 			jsonParser.loadJson(r.readEntity(String.class));
 			Long id =  Long.parseLong(jsonParser.getElement("id"));

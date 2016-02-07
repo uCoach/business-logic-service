@@ -1,4 +1,4 @@
-package ucoach.businesslogic.rest.control;
+package ucoach.businesslogic.rest.manager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +78,20 @@ public class Pretender {
 		objs.put("measures", ljs);
 		
 		return objs;
+	}
+	
+	public static JSONObject getSingleGoal(){
+		org.json.JSONObject obj = new org.json.JSONObject();
+		obj.put("id", 1);
+		obj.put("frequency", "daily");
+		obj.put("objective", ">=");
+		obj.put("value", "5000");
+		obj.put("createdDate", "2016-02-05");
+		obj.put("dueDate", "2016-03-01");		
+		obj.put("achieved", 0);
+		obj.put("hmType", 1);
+		obj.put("user", 1);
+		return obj;
 	}
 	
 	public static JSONObject getSingleHealthMeasure(){

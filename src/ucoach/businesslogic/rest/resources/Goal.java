@@ -13,6 +13,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.json.JSONObject;
+
+import ucoach.businesslogic.rest.manager.GoalManager;
+import ucoach.businesslogic.rest.manager.Pretender;
 import ucoach.util.Authorization;
 
 
@@ -110,16 +114,13 @@ public class Goal {
 			response = Response.status(404).build();
 			return response;
 		}
-		org.json.JSONObject obj = new org.json.JSONObject();
-		obj.put("id", goalId);
-		obj.put("frequency", "daily");
-		obj.put("objective", "100");
-		obj.put("value", "100");
-		obj.put("due_date", "2016/03/01");
-		obj.put("achieved", "No");
-		obj.put("hmType", 1);
-		obj.put("user", userId);
-		response = Response.accepted(obj.toString()).build();
+		JSONObject goal = Pretender.getSingleGoal();
+		
+		System.out.println(goal);
+		goal = GoalManager.updateGoal(goal);
+		System.out.println(goal);
+		
+		response = Response.accepted(goal.toString()).build();
 			
 		return  response;
 	}

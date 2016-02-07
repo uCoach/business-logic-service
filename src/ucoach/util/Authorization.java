@@ -8,7 +8,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
-import ucoach.businesslogic.rest.control.ServiceVars;
+import ucoach.businesslogic.rest.manager.ServiceVars;
 
 public class Authorization {
 

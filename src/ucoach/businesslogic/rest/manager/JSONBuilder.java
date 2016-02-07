@@ -1,4 +1,4 @@
-package ucoach.businesslogic.rest.control;
+package ucoach.businesslogic.rest.manager;
 
 import org.json.JSONObject;
 

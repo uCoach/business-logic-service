@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import ucoach.businesslogic.rest.control.Pretender;
+import ucoach.businesslogic.rest.manager.Pretender;
 import ucoach.util.*;
 
 @Path("/user")
