@@ -24,64 +24,12 @@ import ucoach.util.JsonParser;
 
 public class HealthMeasure {
 	private int idUser;
-	private int idMeasure;
-	
-	/**
-	 * Constructor method when the idMeasure is defined
-	 */
-	public HealthMeasure(int idUser, int idMeasure){
-		this.idUser = idUser;
-		this.idMeasure = idMeasure;
-	}
 	
 	/**
 	 * Constructor method when the idMeasure is not defined (new one)
 	 */
 	public HealthMeasure(int idUser){
 		this.idUser = idUser;
-	}
-	
-	/**
-	 * Verify the client authentication
-	 * @return the HealthMeasure into a JSON
-	 * @throws Exception 
-	 */
-	@GET
-	@Produces({MediaType.APPLICATION_JSON })
-	public Response getMeasure(@Context HttpHeaders headers){
-		Response response;
-		return Response.status(501).build();
-		/*
-		if(! Authorization.validateRequest(headers)){
-			response = Response.status(401).build();
-			return response;
-		}		
-		
-		
-		return response;
-		*/
-	}
-	
-	/**
-	 * Verify the client authentication
-	 * Delete the HealthMeasure if it exists
-	 * @return the final status of the request
-	 * @throws Exception 
-	 */
-	
-	@DELETE
-	@Produces({MediaType.APPLICATION_JSON })
-	public Response deleteMeasure(@Context HttpHeaders headers){
-		return Response.status(501).build();
-		/*
-		Response response;
-		if(! Authorization.validateRequest(headers)){
-			response = Response.status(401).build();
-			return response;
-		}
-		
-		response = Response.status(200).build();
-		return response;*/
 	}
 	
 	/**
@@ -99,7 +47,11 @@ public class HealthMeasure {
 			response = Response.status(401).build();
 			return response;
 		}
-		//int userId, int typeId, float value, Date createdDate
+		
+		if (this.idUser == 0) {
+			return Response.status(401).build();
+		}
+
 		JsonParser jp = new JsonParser();
 		jp.loadJson(body);		
 		int userId = idUser;
@@ -107,7 +59,5 @@ public class HealthMeasure {
 		float value = Float.parseFloat(jp.getElement("value"));
 		
 		return HealthMeasureDataClient.registerHealthMeasure(userId, typeId, value, new Date());			
-		
 	}
-	
 }

@@ -24,7 +24,11 @@ public class GoalList {
 		if(! Authorization.validateRequest(headers)){
 			return  Response.status(401).build();
 		}
-		
+
+		if (this.userId == 0) {
+			return Response.status(401).build();
+		}
+
 		return GoalDataClient.getGoalsFromUser(userId, null, null);
 	}
 }

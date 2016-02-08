@@ -95,8 +95,8 @@ public class User {
 	 * Updates the User for the requester {ID}
 	 * @throws Exception 
 	 */
-	@Path("measurelist/{measure}")
-	public HealthMeasureList getHealthMeasureList(@Context HttpHeaders headers, @PathParam("measure") int measureTypeId) throws Exception{
+	@Path("measurelist/{typeId}")
+	public HealthMeasureList getHealthMeasureList(@Context HttpHeaders headers, @PathParam("typeId") int measureTypeId) throws Exception{
 		
 		// Get userId by token
 		String userToken = headers.getHeaderString("User-Authorization");
@@ -107,64 +107,48 @@ public class User {
 	
 	/**
 	 * Just object Request
-	 * Implements the methods for the current user regarding all the measures
-	 * Updates the User for the requester {ID}
+	 * Implements the methods for the current user regarding single new measure (POST)
 	 * @throws Exception 
 	 */
-	@Path("measurelist")
-	public HealthMeasureList getAllHealthMeasureLists(@Context HttpHeaders headers) throws Exception {
+	@Path("measure")
+	public HealthMeasure getHealthMeasure(@Context HttpHeaders headers) throws Exception{
+		
 		// Get userId by token
 		String userToken = headers.getHeaderString("User-Authorization");
 		int userId = (int) Authenticator.authenticate(userToken);
-			
-		return new HealthMeasureList(userId);		
-	}
 
-	/**
-	 * Just object Request
-	 * Implements the methods for the current user regarding the measure {IDMeasure}
-	 */
-	@Path("{ID}/measure/{IDMeasure}")
-	public HealthMeasure getHealthMeasure (@PathParam("ID") int idUser, @PathParam("ID") int idMeasure){
-		HealthMeasure hm = new HealthMeasure(idUser, idMeasure);
-		return hm;
-	}
-	
-	/**
-	 * Just object Request
-	 * Implements the methods for the current user regarding single new measure (POST)
-	 */
-	@Path("{ID}/measure")
-	public HealthMeasure getHealthMeasure (@PathParam("ID") int idUser){
-		HealthMeasure hm = new HealthMeasure(idUser);
-		return hm;
+		return new HealthMeasure(userId);
 	}
 	
 	/**
 	 * Just object Request
 	 * Implements the methods for the current user regarding single new GOAL (POST)
 	 * Implements the metos for the current user regarding undefined GOALS
+	 * @throws Exception 
 	 */
-	@Path("{ID}/goal")
-	public Goal getGoal(@PathParam("ID") int idUser){
-		Goal g = new Goal(idUser);
-		return g;
+	@Path("goal")
+	public Goal getGoal(@Context HttpHeaders headers) throws Exception {
+		
+		// Get userId by token
+		String userToken = headers.getHeaderString("User-Authorization");
+		int userId = (int) Authenticator.authenticate(userToken);
+
+		return new Goal(userId);
 	}
-	
-	
-	
+
 	/**
 	 * Just object Request
 	 * Implements the methods for the current user regarding single new GOAL (POST)
 	 * Implements the methods for the current user regarding undefined GOALS
+	 * @throws Exception 
 	 */
-	
-	@Path("{idUser}/goalsList/")
-	public GoalList getGoalsByType(@PathParam("idUser") int idUser){
-		GoalList g = new GoalList(idUser);
-		return g;
+	@Path("goalslist")
+	public GoalList getGoalsByType(@Context HttpHeaders headers) throws Exception {
+
+		// Get userId by token
+		String userToken = headers.getHeaderString("User-Authorization");
+		int userId = (int) Authenticator.authenticate(userToken);
+
+		return new GoalList(userId);
 	}
-	
-	
-	
 }

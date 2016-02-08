@@ -29,16 +29,7 @@ public class HealthMeasureList {
 		this.userid = userid;
 		this.measureTypeId = measureTypeId;
 	}
-	
-	/**
-	 * 
-	 * @param userid
-	 */
-	public HealthMeasureList(int userid){
-		this.userid = userid;
-		this.measureTypeId = 0;
-	}
-	
+
 	/**
 	 * Verify the client authentication
 	 * In case the MeasureTypeId is defined, includes on the response only that kind of measure

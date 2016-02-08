@@ -12,8 +12,8 @@ import ucoach.util.DatePatterns;
 import ucoach.util.JsonParser;
 
 public class GoalDataClient {
+
 	static JsonParser jsonParser = new JsonParser();
-	
 	
 	/*Register a new goal*/
 	public static Response registerGoal(JSONObject goalJson) throws Exception{
@@ -26,7 +26,6 @@ public class GoalDataClient {
 			return Response.status(500).build();
 		}		
 	}
-	
 	
 	/*Register a new goal changing the Dates*/
 	public static Response RegisterAndChangeDate(JSONObject goalJson, Date created, Date due) throws Exception{
@@ -42,7 +41,6 @@ public class GoalDataClient {
 			return Response.status(500).build();
 		}		
 	}
-	
 	
 	/*
 	 * This function makes a request for registering a goal as achieved
@@ -61,7 +59,6 @@ public class GoalDataClient {
 			return Response.status(500).build();
 		}
 	}
-	
 	
 	/*
 	 * GEt the goals from a user from one certain due date
@@ -88,7 +85,6 @@ public class GoalDataClient {
 			return Response.status(500).build();
 		}		
 	}
-	
 	
 	/*
 	 * Returns the DailyGoals from a certain date

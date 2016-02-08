@@ -22,12 +22,15 @@ import ucoach.util.DatePatterns;
 
 
 public class GoalUpdater {
+	
 	@Context
 	UriInfo uriInfo;
 	int userId;
+	
 	public GoalUpdater(int userid){
 		this.userId = userid;
 	}
+	
 	/*
 	 * This post receives a JSONArray with a list of GOALS and return them with the updated status
 	 * in case of daily goals, it creates (if necessary) the new goal
@@ -38,6 +41,11 @@ public class GoalUpdater {
 		if(! Authorization.validateRequest(headers)){
 			return  Response.status(401).build();
 		}
+		
+		if (this.userId == 0) {
+			return Response.status(401).build();
+		}
+
 		JSONArray goals;		
 		Date yesterday = DatePatterns.getYesterdayDate();
 		GoalManager goalmng = new GoalManager(userId);
@@ -63,7 +71,5 @@ public class GoalUpdater {
 	@Path("clone")
 	public GoalCloner cloneYesterday(@Context HttpHeaders headers) throws Exception {
 		return new GoalCloner(userId);
-		
 	}
-	
 }
