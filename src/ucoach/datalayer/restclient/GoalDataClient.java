@@ -29,7 +29,7 @@ public class GoalDataClient {
 	
 	
 	/*Register a new goal changing the Dates*/
-	public static Response changeDatesRegisterGoal(JSONObject goalJson, Date created, Date due) throws Exception{
+	public static Response RegisterAndChangeDate(JSONObject goalJson, Date created, Date due) throws Exception{
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget
 				.path("goal");
@@ -76,13 +76,14 @@ public class GoalDataClient {
 		if(from != null){
 			target = target.queryParam("dueDateFrom", DatePatterns.dateFormater(from));
 		}
+		System.out.println(target);
 		if(achieved != null){
 			if (achieved != "true" && achieved!="false")
 				return Response.status(400).build();
 			target = target.queryParam("achieved", achieved);
-		}		
-		try{
-			return DataLayerClient.fetchGetResponse(target, "application/json");
+		}	
+		try{			
+			return DataLayerClient.fetchGetResponse(target, "application/json");			
 		}catch(Exception ex){
 			return Response.status(500).build();
 		}		

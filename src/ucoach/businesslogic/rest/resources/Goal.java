@@ -26,6 +26,7 @@ public class Goal {
 	private int goalId;
 	
 	public Goal (int userId){
+		
 		this.userId = userId;
 		this.goalId = 0;
 	}
@@ -43,7 +44,7 @@ public class Goal {
 	 */
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON })
-	 public Response postSingleGoal(@Context HttpHeaders headers, String body) throws Exception {
+	public Response postSingleGoal(@Context HttpHeaders headers, String body) throws Exception {
 		Authorization.validateRequest(headers);
 		Response response;
 		if(! Authorization.validateRequest(headers)){
@@ -145,5 +146,11 @@ public class Goal {
 		return response;*/
 	}
 	
+	@Path("update")
+	public GoalUpdater updateGoals(){
+		
+		GoalUpdater g = new GoalUpdater(userId);
+		return g;
+	}
 	
 }

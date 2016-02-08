@@ -43,8 +43,7 @@ public class HealthMeasureList {
 		if(! Authorization.validateRequest(headers)){
 			response = Response.status(401).build();
 			return response;
-		}
-			
+		}			
 		response = HealthMeasureDataClient.getHealthMeasures(userid, measureTypeId, null, null);				
 		
 		return response;

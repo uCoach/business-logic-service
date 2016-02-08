@@ -31,8 +31,8 @@ public class Authorization {
 			}
 			
 			String validAuthKey = AUTHORIZATION_KEY;
-			if (String.valueOf(System.getenv("AUTHORIZATION_KEY")) != "null"){
-				validAuthKey = String.valueOf(System.getenv("AUTHORIZATION_KEY"));
+			if (String.valueOf(System.getenv("BUSINESS_AUTH_KEY")) != "null"){
+				validAuthKey = String.valueOf(System.getenv("BUSINESS_AUTH_KEY"));
 			}
 			
 			if (authKey.equals(validAuthKey)){

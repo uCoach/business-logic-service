@@ -19,7 +19,6 @@ public class Authorization {
     if (String.valueOf(System.getenv("DATA_AUTH_KEY")) != "null"){
     	validAuthKey = String.valueOf(System.getenv("DATA_AUTH_KEY"));
     }
-
     builder.header("Authorization", validAuthKey);
 	}
 }

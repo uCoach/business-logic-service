@@ -2,10 +2,7 @@ package ucoach.businesslogic.rest.resources;
 
 import java.util.Date;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -20,12 +17,11 @@ import ucoach.datalayer.restclient.GoalDataClient;
 import ucoach.util.Authorization;
 import ucoach.util.DatePatterns;
 
-
-public class GoalUpdater {
+public class GoalCloner {
 	@Context
 	UriInfo uriInfo;
 	int userId;
-	public GoalUpdater(int userid){
+	public GoalCloner(int userid){
 		this.userId = userid;
 	}
 	/*
@@ -38,19 +34,16 @@ public class GoalUpdater {
 		if(! Authorization.validateRequest(headers)){
 			return  Response.status(401).build();
 		}
-		JSONArray goals;		
+		
+		JSONArray goals; new JSONArray();		
 		Date yesterday = DatePatterns.getYesterdayDate();
 		GoalManager goalmng = new GoalManager(userId);
-		try{			
-			Response r = GoalDataClient.getGoalsFromUser(userId, yesterday, null);			
-			try{
-				goals = new JSONArray(r.readEntity(String.class));
-			}catch(Exception e){
-				return null;
-			}
-			System.out.println(goals);
-			goals = goalmng.updateGoals(goals);
-			System.out.println(goals);
+		try{						
+			Response r = GoalDataClient.getDailyGoalsFromUser(userId, yesterday, null);			
+			goals = new JSONArray(r.readEntity(String.class));
+			//System.out.println(goals);
+			goals = goalmng.cloneGoals(goals);
+			//System.out.println(goals);
 		}catch(Exception e){
 			System.out.println(e);
 			return Response.status(400).build();
@@ -59,11 +52,4 @@ public class GoalUpdater {
 		
 		return Response.accepted(goals.toString()).build();
 	}
-	
-	@Path("clone")
-	public GoalCloner cloneYesterday(@Context HttpHeaders headers) throws Exception {
-		return new GoalCloner(userId);
-		
-	}
-	
 }

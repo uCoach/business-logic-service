@@ -163,16 +163,7 @@ public class User {
 		return g;
 	}
 	
-	/**
-	 * Just object Request
-	 * Implements the methods regarding a defined Goal
-	 */
-	@Path("{ID}/goal/{goalId}")
-	public Goal getGoal(@PathParam("ID") int idUser, @PathParam("goalId") int idGoal){
-		Goal g = new Goal(idUser, idGoal);
-		//System.out.println("abobora"+idGoal);
-		return g;
-	}
+	
 	
 	/**
 	 * Just object Request
@@ -180,9 +171,9 @@ public class User {
 	 * Implements the methods for the current user regarding undefined GOALS
 	 */
 	
-	@Path("{idUser}/goallist/{idType}")
-	public Goal getGoalsByType(@PathParam("idUser") int idUser, @PathParam("idUser") int idType){
-		Goal g = new Goal(idUser, idType);
+	@Path("{idUser}/goalsList/")
+	public GoalList getGoalsByType(@PathParam("idUser") int idUser){
+		GoalList g = new GoalList(idUser);
 		return g;
 	}
 	

@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import ucoach.datalayer.restclient.GoalDataClient;
 import ucoach.datalayer.restclient.HealthMeasureDataClient;
 import ucoach.util.DatePatterns;
 import ucoach.util.JsonParser;
@@ -29,9 +30,11 @@ import ucoach.util.JsonParser;
 
 public class GoalManager {
 	static JsonParser jsonParser = new JsonParser();
-	
-	public static JSONArray updateGoals(JSONArray jsonGoals) throws Exception{
-		
+	int userId;
+	public GoalManager(int userId){
+		this.userId = userId;
+	}
+	public JSONArray updateGoals(JSONArray jsonGoals) throws Exception{
 		//perform the JSON Update goal for all elements of the JSONArray
 		for(int i = 0; i<jsonGoals.length(); i++){
 			JSONObject goal = jsonGoals.getJSONObject(i);
@@ -42,56 +45,31 @@ public class GoalManager {
 	}
 	
 	
-	public static JSONObject updateGoal(JSONObject goal) throws Exception{							
+	public JSONObject updateGoal(JSONObject goal) throws Exception{							
 		//Initialize the variables
+		System.out.println("1");
 		Date createdDate = DatePatterns.dateParser(goal.getString("createdDate"));
 		Date dueDate = DatePatterns.dateParser(goal.getString("dueDate"));
-		int user = goal.getInt("user");
-		int hmType = goal.getInt("hmType");
-		String frequency = "";
-		boolean hasFrequency = false;
+		int user = userId;		
+		JSONObject hmTypeJson = goal.getJSONObject("hmType");
+		int hmType = hmTypeJson.getInt("id");
 		float reachedValue = 0;
-		
 		//getting the objective (>,<,>=,...)
 		String objective = goal.getString("objective");
-		
-		//Take the HM code of the goal
-		int hmId = goal.getInt("hmType");
 		
 		//getting the actual goal value
 		float goalValue = 0;
 		try{
-			goalValue = Float.parseFloat(goal.getString("value"));
+			goalValue = goal.getLong ("value");
 		}catch(Exception e){
 			System.out.println("exception float parsing[2]");
-		}
-		
-		//check if the goal is recurrent or not
-		if(goal.has("frequency")){
-			frequency = goal.getString("frequency");
-			if (frequency!="")
-				hasFrequency = true;
-		}
-		
-		/* Checking the goals
-		 * In case it is not recurrent. we can simply check the achieved goals
-		 * In case it is recurrent, we will:
-		 *  	-Check if the goals were achieved for yesterday
-		 *  	-Create a new goal with the createdDate for today
-		 */
-		int hmTypeId = 2;
-		if(!hasFrequency){
-			reachedValue = getReachedValue(hmTypeId, user,  createdDate,  dueDate);
-			System.out.println("DO NOT CREATE A NEW GOAL");
-		}else{
-			System.out.println("CREATE A NEW GOAL");
-			Date today = new Date();
-			Date yesterday = DatePatterns.getYesterdayDate();
-			reachedValue = getReachedValue(hmTypeId, user, yesterday, yesterday);				
-			/*
-			 * HERE COMES THE CREATING A NEW GOAL
-			 */
-		}			
+			try{
+				goalValue = goal.getInt("value");
+			}catch(Exception e2){
+				System.out.println("exception float parsing[3]");
+			}
+		}		
+		reachedValue = getReachedValue(hmType, user,  createdDate,  dueDate);
 		//Verifying the objective, if so, update the goal to achieved
 		if(verifyObjective(objective, reachedValue, goalValue)){
 			goal.put("achieved", 1);				
@@ -106,20 +84,37 @@ public class GoalManager {
 	public static float getReachedValue(int hmTypeId, int user, Date startDate, Date dueDate){		
 		/*
 		 * HERE COMES THE GET FOR THE hmTypeName
-		 * 2 = weight
+		 * '1', 'weight', 'kg'
+		 * '2', 'height', 'cm'
+		 * '3', 'steps', 'steps'
+		 * '4', 'heart rate', 'bpm'
+		 * '5', 'calories', 'calories'
+		 * '6', 'running', 'km'
+		 * '7', 'walking', 'km'
+		 * '8', 'cycling', 'km'
+		 * '9', 'sleeping', 'hours'
 		 * 
 		 */
-		//get the hmType name
-			
-		//weight, steps, calories, 
+		 
 		switch (hmTypeId){
-			case 4:
-				return sumMeasures(hmTypeId,user, startDate, dueDate);
-			case 3:
-				return sumMeasures(hmTypeId,user, startDate, dueDate);
-			case 2:
+			case 1: //reach a weight x
 				return lastMeasure(hmTypeId,user, startDate, dueDate);
-			
+			case 2: //reach a height x
+				return lastMeasure(hmTypeId,user, startDate, dueDate);
+			case 3: //walk x steps
+				return sumMeasures(hmTypeId,user, startDate, dueDate);
+			case 4: //reach a heart rate
+				return lastMeasure(hmTypeId,user, startDate, dueDate);
+			case 5: //spend x calories
+				return sumMeasures(hmTypeId,user, startDate, dueDate);
+			case 6: //run x Kilometers
+				return sumMeasures(hmTypeId,user, startDate, dueDate);
+			case 7: //walk x kilometers
+				return sumMeasures(hmTypeId,user, startDate, dueDate);
+			case 8: //cycle x kilometers
+				return sumMeasures(hmTypeId,user, startDate, dueDate);
+			case 9: //sleep x hours
+				return sumMeasures(hmTypeId,user, startDate, dueDate);				
 		}
 		
 		return 0;
@@ -129,18 +124,24 @@ public class GoalManager {
 		//take the HealthMeasures from the hmType
 		Response r = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
 		//JSONObject healthMeasuresJSON = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
-		JSONArray measures = new JSONArray(r.toString());
+		JSONArray measures = new JSONArray(r.readEntity(String.class));
 		float reachedValue = 0;
 		//for each measure
+		if (measures.length()==0)
+			return 0;
 		for(int j=0; j<measures.length(); j++){
 			JSONObject measure = measures.getJSONObject(j);
 			
 			//take the value of the measure and sum to the totalValue
-			String value = measure.getString("value");
+			
 			try{ 
-				reachedValue += Float.parseFloat(value);
+				reachedValue += measure.getLong("value");				
 			}catch(Exception e){
 				System.out.println("exception float parsing");
+				try{
+					reachedValue += measure.getInt("value");
+				}catch(Exception ex){}
+				
 			}
 		}
 		return reachedValue;
@@ -148,19 +149,25 @@ public class GoalManager {
 	
 	public static float lastMeasure(int hmTypeId, int user, Date startDate, Date dueDate){
 		//take the HealthMeasures from the hmType
-		
 		Response r = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
 		
-		System.out.println(r.toString());
-		JSONArray measures = new JSONArray(r.toString());
-		
+		JSONArray measures = new JSONArray(r.readEntity(String.class));
 		//Take the last object and its value
+		if (measures.length()==0)
+			return 0;
 		JSONObject measure = measures.getJSONObject(measures.length()-1);		
-		String value = measure.getString("value");
+		Float value;
 		try{ 
-			return Float.parseFloat(value);
+			value = (float) measure.getLong("value");
+			return value;
 		}catch(Exception e){
 			System.out.println("exception float parsing");
+			try{
+				value = (float) measure.getInt("value");
+				return value;
+			}catch(Exception ex){}
+			
+			
 		}		
 		return 0;
 	}
@@ -180,6 +187,30 @@ public class GoalManager {
 				return (v1==v2);
 		}
 		return false;
+	}
+	
+	public static JSONArray cloneGoals(JSONArray jsonGoals) throws Exception{
+		
+		//perform the JSON Update goal for all elements of the JSONArray
+		for(int i = 0; i<jsonGoals.length(); i++){
+			JSONObject goal = jsonGoals.getJSONObject(i);
+			goal = cloneGoal(goal);
+			jsonGoals.put(i, goal);
+		}
+		return jsonGoals;
+	}
+	
+	public static JSONObject cloneGoal(JSONObject goal) throws Exception{
+		String frequency = goal.getString("frequency");
+		boolean hasFreuency = false;
+		goal.put("achieved", 0);
+		frequency = goal.getString("frequency");
+		if (!frequency.equalsIgnoreCase("daily"))
+			return goal;
+		Date today = new Date();
+		GoalDataClient.RegisterAndChangeDate(goal, today, today);
+		
+		return goal;
 	}
 	
 	

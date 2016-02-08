@@ -49,14 +49,16 @@ public class HealthMeasureDataClient {
 				.path(typeId+"")
 				.path("user")
 				.path(userId+"");
+		
+		
 		if(fromDate != null){
 			target = target.queryParam("fromDate", DatePatterns.dateFormater(fromDate));
 				if(toDate != null)
 					target = target.queryParam("toDate", DatePatterns.dateFormater(toDate));
 		}
-		try{
+		System.out.println(target);
+		try{			
 			Response r = DataLayerClient.fetchGetResponse(target, "application/json");
-			//System.out.println(r);
 			return r;
 		}catch(Exception ex){
 			return Response.status(500).build();

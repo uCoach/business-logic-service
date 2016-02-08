@@ -5,17 +5,11 @@ public class ServiceVars {
 		= "default_authorization_key";
 	
 	public static final  String AUTHENTICATION_API_ADDRESS
-		= "http://192.168.0.100:5700/auth/";
-	
-	
+		= "https://ucoach-authentication-api.herokuapp.com/auth/";
 	
 	public static final String DATA_LAYER_ADDRESS 
-		= "http://192.168.0.100:5000/data/";
+		= "https://ucoach-data-service.herokuapp.com/data/";
 	
 	public static final String DATA_LAYER_AUTHORIZATION_KEY
 		= "default_authorization_key";	
-	
-	public static final  String DEFAULT_KEY
-		= "default_authorization_key";	
-	
 }

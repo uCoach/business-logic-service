@@ -15,7 +15,7 @@
        # The target "download-ivy" and "install-ivy" will download the ivy jar and place it in the "ivy" folder
        # 
 -->
-    <project name="AuthServer" default="install" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+    <project name="ucoach.business.logic" default="run" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
         <!-- PART 1: Ivy properties, download, installation and configuration -->
         <property name="ivy.install.version" value="2.4.0-rc1" />
         <property name="ivy.jar.dir" value="${basedir}/ivy" />
@@ -117,7 +117,7 @@
             </java>
         	
         </target>
-    	<target name="goClient"  depends="clean, install">
+    	<target name="test"  depends="clean, install">
             <echo message="app start auth.MainTest in ${build.dir}" />
             <java classname="MainTest" classpath="${build.dir}" fork="true">
                 <arg value="$JAVA_OPTS  -cp" />
@@ -129,18 +129,8 @@
                     </fileset>
                 </classpath>
             </java>
-        </target>
-        
-        <!-- make sure you have created first the WebContent folder, including a META-INF folder, WEB-INF/web.xml file and WEB-INF/lib folder -->
-        <target name="create.war" depends="install">
-            <war destfile="sdelab06.war" webxml="${web.dir}/WebContent/WEB-INF/web.xml">
-                <fileset dir="${web.dir}/WebContent">
-                    <include name="**/*.*" />
-                </fileset>
-                <classes dir="${build.dir}" />
-            </war>
-        </target>
+        </target>       
 
-        <target name="go" depends="clean, install, start">
+        <target name="run" depends="clean, install, start">
         </target>
     </project>
