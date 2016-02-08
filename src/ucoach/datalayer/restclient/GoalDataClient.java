@@ -13,6 +13,8 @@ import ucoach.util.JsonParser;
 
 public class GoalDataClient {
 	static JsonParser jsonParser = new JsonParser();
+	
+	
 	/*Register a new goal*/
 	public static Response registerGoal(JSONObject goalJson) throws Exception{
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
@@ -24,6 +26,8 @@ public class GoalDataClient {
 			return Response.status(500).build();
 		}		
 	}
+	
+	
 	/*Register a new goal changing the Dates*/
 	public static Response changeDatesRegisterGoal(JSONObject goalJson, Date created, Date due) throws Exception{
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
@@ -39,6 +43,7 @@ public class GoalDataClient {
 		}		
 	}
 	
+	
 	/*
 	 * This function makes a request for registering a goal as achieved
 	 * Makes a put request sending the JSONOBject empty
@@ -51,17 +56,17 @@ public class GoalDataClient {
 				.path(goalId+"")
 				.path("achieved");
 		try{
-			return DataLayerClient.fetchPutResponse(target, "application/json", new JSONObject(""));
+			return DataLayerClient.fetchPutResponse(target, "application/json", new JSONObject("{}"));
 		}catch(Exception ex){
 			return Response.status(500).build();
 		}
 	}
 	
+	
 	/*
 	 * GEt the goals from a user from one certain due date
 	 * achieved can assume the values of "true" and "false"
-	 * */
-	
+	 * */	
 	public static Response getGoalsFromUser(int userid, Date from, String achieved){
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget
@@ -82,6 +87,7 @@ public class GoalDataClient {
 			return Response.status(500).build();
 		}		
 	}
+	
 	
 	/*
 	 * Returns the DailyGoals from a certain date

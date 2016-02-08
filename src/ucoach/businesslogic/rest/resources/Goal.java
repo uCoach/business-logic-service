@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import ucoach.businesslogic.rest.manager.GoalManager;
 import ucoach.businesslogic.rest.manager.Pretender;
+import ucoach.datalayer.restclient.GoalDataClient;
 import ucoach.util.Authorization;
 
 
@@ -42,25 +43,15 @@ public class Goal {
 	 */
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON })
-	 public Response postSingleGoal(@Context HttpHeaders headers) throws Exception {
+	 public Response postSingleGoal(@Context HttpHeaders headers, String body) throws Exception {
 		Authorization.validateRequest(headers);
 		Response response;
 		if(! Authorization.validateRequest(headers)){
-			response = Response.status(401).build();
-			return  response;
+			return Response.status(401).build();
 		}
-		org.json.JSONObject obj = new org.json.JSONObject();
-		obj.put("id", 1);
-		obj.put("frequency", "daily");
-		obj.put("objective", "100");
-		obj.put("value", "100");
-		obj.put("due_date", "2016/03/01");
-		obj.put("achieved", "No");
-		obj.put("hmType", 1);
-		obj.put("user", userId);
-		response = Response.accepted(obj.toString()).build();
-			
-		return  response;
+		JSONObject goal = new JSONObject(body);
+		goal.put("userId", userId);
+		return GoalDataClient.registerGoal(goal);
 	}
 	
 	/**
@@ -72,6 +63,8 @@ public class Goal {
 	@PUT
 	@Consumes({MediaType.APPLICATION_JSON })
 	 public Response updateSingleGoal(@Context HttpHeaders headers) throws Exception {
+		return Response.status(501).build();
+		/*
 		Authorization.validateRequest(headers);
 		Response response;
 		if(! Authorization.validateRequest(headers)){
@@ -93,7 +86,7 @@ public class Goal {
 		obj.put("user", userId);
 		response = Response.accepted(obj.toString()).build();
 			
-		return  response;
+		return  response;*/
 	}
 	
 	/**
@@ -106,6 +99,8 @@ public class Goal {
 	@Produces({MediaType.APPLICATION_JSON })
 	 public Response getPerson(@Context HttpHeaders headers) throws Exception {
 		Response response;
+		return Response.status(501).build();
+		/*
 		if(! Authorization.validateRequest(headers)){
 			response = Response.status(401).build();
 			return  response;
@@ -122,7 +117,7 @@ public class Goal {
 		
 		response = Response.accepted(goal.toString()).build();
 			
-		return  response;
+		return  response;*/
 	}
 	
 	/**
@@ -135,6 +130,8 @@ public class Goal {
 	@Produces({MediaType.APPLICATION_JSON })
 	public Response deleteMeasure(@Context HttpHeaders headers){
 		Response response;
+		return Response.status(501).build();
+		/*
 		if(! Authorization.validateRequest(headers)){
 			response = Response.status(401).build();
 			return response;
@@ -145,7 +142,7 @@ public class Goal {
 		}
 		
 		response = Response.status(200).build();
-		return response;
+		return response;*/
 	}
 	
 	
