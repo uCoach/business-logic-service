@@ -12,6 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.json.JSONObject;
@@ -90,6 +91,31 @@ public class User {
 		return UserDataClient.getUserById(userId);
 	}
 	
+	@GET
+	@Path("/google/authorization")
+	@Produces({MediaType.APPLICATION_JSON })
+  public Response authorizeGoogleApi(@Context HttpHeaders headers) throws Exception {
+		if(!Authorization.validateRequest(headers)){
+			return Response.status(401).build();
+		}
+
+		// Get userId by token
+		String userToken = headers.getHeaderString("User-Authorization");
+		long userId = Authenticator.authenticate(userToken);
+		if(userId == 0) return Response.status(401).build();
+		
+		Response r = UserDataClient.authorizeUserGoogle(userId);
+		if (r == null) return Response.status(401).build();
+		
+		// Parser response
+		String jsonResponse = r.readEntity(String.class);
+		JsonParser parser = new JsonParser();
+		parser.loadJson(jsonResponse);
+		String url = parser.getElement("location");
+		
+		return Response.seeOther(UriBuilder.fromUri(url).build()).build();
+	}
+
 	/**
 	 * Just object Request
 	 * Implements the methods for the current user regarding all the measures with the type {measure}

@@ -44,6 +44,7 @@ static JsonParser jsonParser = new JsonParser();
 		WebTarget target = baseTarget
 				.path("user")
 				.path(id+"");
+				
 		try{
 			return DataLayerClient.fetchGetResponse(target, "application/json");
 
@@ -70,7 +71,29 @@ static JsonParser jsonParser = new JsonParser();
 			return r;
 		}catch(Exception ex){
 			return null;
-		}		
+		}
 	}
 	
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws Exception
+	 */
+	public static Response authorizeUserGoogle(long userId) throws Exception {
+		WebTarget baseTarget = DataLayerClient.getWebTarget();
+		WebTarget target = baseTarget
+				.path("user")
+				.path(userId + "")
+				.path("google")
+				.path("authorization");
+
+		try{
+			Response r = DataLayerClient.fetchGetResponse(target, "application/json");
+			System.out.println(r);
+			return r;
+		}catch(Exception ex){
+			return null;
+		}
+	}
 }
