@@ -32,7 +32,7 @@ public class HealthMeasureDataClient {
 			Response r = DataLayerClient.fetchPostResponse(target, "application/json", measureJson);
 			return r;
 		}catch(Exception ex){
-			return null;
+			return Response.status(500).build();
 		}		
 	}
 	
@@ -54,13 +54,12 @@ public class HealthMeasureDataClient {
 				if(toDate != null)
 					target = target.queryParam("toDate", DatePatterns.dateFormater(toDate));
 		}
-		System.out.println(target);
 		try{
 			Response r = DataLayerClient.fetchGetResponse(target, "application/json");
 			//System.out.println(r);
 			return r;
 		}catch(Exception ex){
-			return null;
+			return Response.status(500).build();
 		}
 	}
 	

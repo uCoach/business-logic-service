@@ -50,19 +50,16 @@ public class HealthMeasure {
 	@Produces({MediaType.APPLICATION_JSON })
 	public Response getMeasure(@Context HttpHeaders headers){
 		Response response;
+		return Response.status(501).build();
+		/*
 		if(! Authorization.validateRequest(headers)){
 			response = Response.status(401).build();
 			return response;
 		}		
-		org.json.JSONObject obj = new org.json.JSONObject();
-		obj.put("idUser", idUser);
-		obj.put("idMeasure", idMeasure);
-		obj.put("idType", 2);
-		obj.put("value", "1000");
-		obj.put("measurement", "Kg");		
-		response = Response.accepted(obj.toString()).build();	
+		
 		
 		return response;
+		*/
 	}
 	
 	/**
@@ -75,6 +72,8 @@ public class HealthMeasure {
 	@DELETE
 	@Produces({MediaType.APPLICATION_JSON })
 	public Response deleteMeasure(@Context HttpHeaders headers){
+		return Response.status(501).build();
+		/*
 		Response response;
 		if(! Authorization.validateRequest(headers)){
 			response = Response.status(401).build();
@@ -82,7 +81,7 @@ public class HealthMeasure {
 		}
 		
 		response = Response.status(200).build();
-		return response;
+		return response;*/
 	}
 	
 	/**
@@ -94,8 +93,7 @@ public class HealthMeasure {
 	 */
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON })
-	public Response postNewMeasure(@Context HttpHeaders headers, String body) throws NumberFormatException, Exception{
-		
+	public Response postNewMeasure(@Context HttpHeaders headers, String body) throws NumberFormatException, Exception{		
 		Response response;
 		if(! Authorization.validateRequest(headers)){
 			response = Response.status(401).build();
@@ -103,13 +101,11 @@ public class HealthMeasure {
 		}
 		//int userId, int typeId, float value, Date createdDate
 		JsonParser jp = new JsonParser();
-		System.out.println("1");
-		jp.loadJson(body);
-		System.out.println("2");
+		jp.loadJson(body);		
 		int userId = idUser;
 		int typeId = Integer.parseInt(jp.getElement("typeId"));
 		float value = Float.parseFloat(jp.getElement("value"));
-		System.out.println("3");
+		
 		return HealthMeasureDataClient.registerHealthMeasure(userId, typeId, value, new Date());			
 		
 	}
