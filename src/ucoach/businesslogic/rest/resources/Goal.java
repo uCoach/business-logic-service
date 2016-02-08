@@ -22,12 +22,13 @@ import ucoach.util.Authorization;
 public class Goal {
 
 	private int userId;
-	
+	String dateFrom;
+
 	/**
 	 * 
 	 * @param userId
 	 */
-	public Goal (int userId){
+	public Goal(int userId) {
 		this.userId = userId;
 	}
 	
@@ -53,11 +54,5 @@ public class Goal {
 		JSONObject goal = new JSONObject(body);
 		goal.put("userId", userId);
 		return GoalDataClient.registerGoal(goal);
-	}
-
-	@Path("update")
-	public GoalUpdater updateGoals(){
-		
-		return new GoalUpdater(userId);
 	}
 }

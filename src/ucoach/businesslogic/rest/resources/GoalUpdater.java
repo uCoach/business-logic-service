@@ -26,15 +26,18 @@ public class GoalUpdater {
 	@Context
 	UriInfo uriInfo;
 	int userId;
+	String dateFrom;
 	
-	public GoalUpdater(int userid){
+	/**
+	 * 
+	 * @param userid
+	 * @param dateFrom
+	 */
+	public GoalUpdater(int userid, String dateFrom){
 		this.userId = userid;
+		this.dateFrom = dateFrom;
 	}
-	
-	/*
-	 * This post receives a JSONArray with a list of GOALS and return them with the updated status
-	 * in case of daily goals, it creates (if necessary) the new goal
-	 * */
+
 	@GET
 	@Produces({MediaType.APPLICATION_JSON })
 	 public Response updateGoals(@Context HttpHeaders headers) throws Exception {
@@ -47,10 +50,10 @@ public class GoalUpdater {
 		}
 
 		JSONArray goals;		
-		Date yesterday = DatePatterns.getYesterdayDate();
+		Date date = DatePatterns.dateParser(dateFrom);
 		GoalManager goalmng = new GoalManager(userId);
 		try{			
-			Response r = GoalDataClient.getGoalsFromUser(userId, yesterday, null);			
+			Response r = GoalDataClient.getGoalsFromUser(userId, date, "false");			
 			try{
 				goals = new JSONArray(r.readEntity(String.class));
 			}catch(Exception e){
@@ -63,7 +66,6 @@ public class GoalUpdater {
 			System.out.println(e);
 			return Response.status(400).build();
 		}
-		
 		
 		return Response.accepted(goals.toString()).build();
 	}

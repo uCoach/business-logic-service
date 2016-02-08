@@ -136,6 +136,16 @@ public class User {
 
 		return new Goal(userId);
 	}
+	
+	@Path("goal-update")
+	public GoalUpdater updateGoal(@QueryParam("dateFrom") String dateFrom, @Context HttpHeaders headers) throws Exception {
+		
+		// Get userId by token
+		String userToken = headers.getHeaderString("User-Authorization");
+		int userId = (int) Authenticator.authenticate(userToken);
+
+		return new GoalUpdater(userId, dateFrom);
+	}
 
 	/**
 	 * Just object Request
