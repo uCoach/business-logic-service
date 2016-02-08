@@ -16,10 +16,9 @@ import ucoach.util.JsonParser;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
-
 public class Authenticator {
-	static JsonParser jsonParser = new JsonParser();
 
+	static JsonParser jsonParser = new JsonParser();
 	
 	/**
 	 * Starts a new connection with the authentication server
@@ -30,6 +29,9 @@ public class Authenticator {
 	 * @throws Exception 
 	 */
 	public static long authenticate(String token) throws Exception{
+
+		if(token == "" || token == null) return 0;
+
 		ClientConfig config = new ClientConfig().register(new JacksonFeature());
 		Client client = ClientBuilder.newClient(config);
 		WebTarget baseTarget = client.target(getBaseURI() );
@@ -38,19 +40,25 @@ public class Authenticator {
 				.path("verify")
 				.path(token);
 		try{
+			
 			System.out.println(target);
 			Response r = target.request().accept("application/json").get();
 			jsonParser.loadJson(r.readEntity(String.class));
 			Long id =  Long.parseLong(jsonParser.getElement("id"));
 			return id;
+			
 		}catch(Exception ex){
 			return 0;
 		}		
 	}
 	
+	/**
+	 * Return base URI
+	 * @return
+	 */
 	private static URI getBaseURI() {
-        return UriBuilder.fromUri(ServiceVars.AUTHENTICATION_API_ADDRESS).build();
-    }
+      return UriBuilder.fromUri(ServiceVars.AUTHENTICATION_API_ADDRESS).build();
+  }
 }
 
 

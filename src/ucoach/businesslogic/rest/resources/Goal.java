@@ -16,12 +16,11 @@ import javax.ws.rs.core.Response;
 import org.json.JSONObject;
 
 import ucoach.businesslogic.rest.manager.GoalManager;
-import ucoach.businesslogic.rest.manager.Pretender;
 import ucoach.datalayer.restclient.GoalDataClient;
 import ucoach.util.Authorization;
 
-
 public class Goal {
+
 	private int userId;
 	private int goalId;
 	

@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.json.JSONObject;
 
+import ucoach.authentication.restclient.Authenticator;
 import ucoach.datalayer.restclient.HealthMeasureDataClient;
 import ucoach.util.Authorization;
 
@@ -19,14 +20,23 @@ public class HealthMeasureList {
 	private int measureTypeId;
 	HttpHeaders headers;
 	
+	/**
+	 * 
+	 * @param userid
+	 * @param measureTypeId
+	 */
 	public HealthMeasureList(int userid, int measureTypeId){
 		this.userid = userid;
 		this.measureTypeId = measureTypeId;
 	}
+	
+	/**
+	 * 
+	 * @param userid
+	 */
 	public HealthMeasureList(int userid){
 		this.userid = userid;
 		this.measureTypeId = 0;
-		
 	}
 	
 	/**
@@ -38,15 +48,19 @@ public class HealthMeasureList {
 	 */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON })
-	public Response getMeasures(@Context HttpHeaders headers){
+	public Response getMeasures(@Context HttpHeaders headers) throws Exception{
 		Response response = null;
 		if(! Authorization.validateRequest(headers)){
 			response = Response.status(401).build();
 			return response;
 		}			
+
+		if (this.userid == 0) {
+			return Response.status(401).build();
+		}
+
 		response = HealthMeasureDataClient.getHealthMeasures(userid, measureTypeId, null, null);				
 		
 		return response;
-		
 	}
 }

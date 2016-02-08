@@ -15,14 +15,15 @@ import javax.ws.rs.core.UriInfo;
 
 import org.json.JSONObject;
 
+import ucoach.authentication.restclient.Authenticator;
 import ucoach.authentication.restclient.Login;
 import ucoach.businesslogic.rest.manager.JSONBuilder;
-import ucoach.businesslogic.rest.manager.Pretender;
 import ucoach.datalayer.restclient.UserDataClient;
 import ucoach.util.*;
 
 @Path("/user")
 public class User {
+
 	@Context
 	UriInfo uriInfo;	
 	
@@ -44,9 +45,9 @@ public class User {
 		}
 		//Try to add the user
 		Response registerResponse = UserDataClient.registerUser( new JSONObject(requestBody));
-		//System.out.println(registerResponse.getStatus());
+		
 		if(registerResponse.getStatus()==200 || registerResponse.getStatus()==202 ){
-			//System.out.println(registerResponse.getStatus());
+			
 			String userJson = registerResponse.readEntity(String.class);
 			jsonParser.loadJson(userJson);
 			
@@ -63,75 +64,62 @@ public class User {
 		}else{
 			return registerResponse;
 		}
-			
-				
-		
-		
 	}
 	
 	/**
-	 * Verify the client authentication
-	 * Updates the User for the requester {ID}
-	 * @return the updated User Object
-	 * @throws Exception 
-	 */
-	@Path("{ID}")
-	@PUT
-	@Consumes({MediaType.APPLICATION_JSON })
-	public Response updateUser(@Context HttpHeaders headers, String requestBody, @PathParam("ID") long id) throws Exception{
-		Response rs;
-		System.out.println(id);
-		if(! Authorization.validateRequest(headers)){
-			rs = Response.status(401).build();
-			return rs;
-		}
-		
-		rs= Response.accepted().build();
-		return rs;
-	}
-	
-	/**
-	 * Verify the client authentication
+	 * Get User info
 	 * @return the User from the given ID
 	 * @throws Exception 
 	 */
-	@Path("{ID}")
 	@GET
 	@Produces({MediaType.APPLICATION_JSON })
-    public Response getUser(@Context HttpHeaders headers, @PathParam("ID") long id) throws Exception {
-		Response rs;
-		if(! Authorization.validateRequest(headers)){
-			rs = Response.status(401).build();
-			return rs;
-		}		
-		org.json.JSONObject obj = Pretender.getUser();	
-		rs= Response.accepted(obj.toString()).build();
-		return rs;
+    public Response getUser(@Context HttpHeaders headers) throws Exception {
+
+		if(!Authorization.validateRequest(headers)){
+			return Response.status(401).build();
+		}
+
+		// Get userId by token
+		String userToken = headers.getHeaderString("User-Authorization");
+		long userId = Authenticator.authenticate(userToken);
+		if(userId == 0) {
+			return Response.status(401).build();
+		}
+
+		return UserDataClient.getUserById(userId);
 	}
 	
 	/**
 	 * Just object Request
 	 * Implements the methods for the current user regarding all the measures with the type {measure}
 	 * Updates the User for the requester {ID}
+	 * @throws Exception 
 	 */
-	@Path("{ID}/measurelist/{measure}")
-	public HealthMeasureList getHealthMeasureList(@PathParam("ID") int id, @PathParam("measure") int measureTypeId){
+	@Path("measurelist/{measure}")
+	public HealthMeasureList getHealthMeasureList(@Context HttpHeaders headers, @PathParam("measure") int measureTypeId) throws Exception{
 		
-		HealthMeasureList hml = new HealthMeasureList(id, measureTypeId);
-		return hml;		
+		// Get userId by token
+		String userToken = headers.getHeaderString("User-Authorization");
+		int userId = (int) Authenticator.authenticate(userToken);
+
+		return new HealthMeasureList(userId, measureTypeId);		
 	}
 	
 	/**
 	 * Just object Request
 	 * Implements the methods for the current user regarding all the measures
 	 * Updates the User for the requester {ID}
+	 * @throws Exception 
 	 */
-	@Path("{ID}/measurelist/")
-	public HealthMeasureList getAllHealthMeasureLists( @PathParam("ID") int id){		
-		HealthMeasureList hml = new HealthMeasureList( id);
-		return hml;		
+	@Path("measurelist")
+	public HealthMeasureList getAllHealthMeasureLists(@Context HttpHeaders headers) throws Exception {
+		// Get userId by token
+		String userToken = headers.getHeaderString("User-Authorization");
+		int userId = (int) Authenticator.authenticate(userToken);
+			
+		return new HealthMeasureList(userId);		
 	}
-	
+
 	/**
 	 * Just object Request
 	 * Implements the methods for the current user regarding the measure {IDMeasure}

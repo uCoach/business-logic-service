@@ -15,35 +15,49 @@ import ucoach.util.JsonParser;
 public class UserDataClient {
 static JsonParser jsonParser = new JsonParser();
 
-	
-	
-
+/**
+ * 
+ * @param userJson
+ * @return
+ * @throws Exception
+ */
 	public static Response registerUser(JSONObject userJson) throws Exception{
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget
 				.path("user");
 		try{
-			Response r = DataLayerClient.fetchPostResponse(target, "application/json", userJson);
-			return r;
+			return DataLayerClient.fetchPostResponse(target, "application/json", userJson);
+			
 		}catch(Exception ex){
 			return null;
 		}		
 	}
 	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 	public static Response getUserById(long id) throws Exception{
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget
 				.path("user")
 				.path(id+"");
 		try{
-			Response r = DataLayerClient.fetchGetResponse(target, "application/json");
-			System.out.println(r);
-			return r;
+			return DataLayerClient.fetchGetResponse(target, "application/json");
+
 		}catch(Exception ex){
 			return null;
 		}		
 	}
 	
+	/**
+	 * 
+	 * @param email
+	 * @return
+	 * @throws Exception
+	 */
 	public static Response getUserByEmail(String email) throws Exception{
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget

@@ -29,11 +29,24 @@ import ucoach.util.JsonParser;
  */
 
 public class GoalManager {
+
 	static JsonParser jsonParser = new JsonParser();
 	int userId;
+	
+	/**
+	 * Constructor
+	 * @param userId
+	 */
 	public GoalManager(int userId){
 		this.userId = userId;
 	}
+	
+	/**
+	 * Update goal list
+	 * @param jsonGoals
+	 * @return
+	 * @throws Exception
+	 */
 	public JSONArray updateGoals(JSONArray jsonGoals) throws Exception{
 		//perform the JSON Update goal for all elements of the JSONArray
 		for(int i = 0; i<jsonGoals.length(); i++){
@@ -44,7 +57,12 @@ public class GoalManager {
 		return jsonGoals;
 	}
 	
-	
+	/**
+	 * Update goal
+	 * @param goal
+	 * @return
+	 * @throws Exception
+	 */
 	public JSONObject updateGoal(JSONObject goal) throws Exception{							
 		//Initialize the variables
 		System.out.println("1");
@@ -81,6 +99,14 @@ public class GoalManager {
 		return goal;		
 	}
 	
+	/**
+	 * 
+	 * @param hmTypeId
+	 * @param user
+	 * @param startDate
+	 * @param dueDate
+	 * @return
+	 */
 	public static float getReachedValue(int hmTypeId, int user, Date startDate, Date dueDate){		
 		/*
 		 * HERE COMES THE GET FOR THE hmTypeName
@@ -120,6 +146,14 @@ public class GoalManager {
 		return 0;
 	}
 	
+	/**
+	 * 
+	 * @param hmTypeId
+	 * @param user
+	 * @param startDate
+	 * @param dueDate
+	 * @return
+	 */
 	public static float sumMeasures(int hmTypeId, int user, Date startDate, Date dueDate){
 		//take the HealthMeasures from the hmType
 		Response r = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
@@ -147,6 +181,14 @@ public class GoalManager {
 		return reachedValue;
 	}
 	
+	/**
+	 * 
+	 * @param hmTypeId
+	 * @param user
+	 * @param startDate
+	 * @param dueDate
+	 * @return
+	 */
 	public static float lastMeasure(int hmTypeId, int user, Date startDate, Date dueDate){
 		//take the HealthMeasures from the hmType
 		Response r = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
@@ -172,7 +214,13 @@ public class GoalManager {
 		return 0;
 	}
 	
-	//Verify if the first value attend to the objective when compared to the second
+	/**
+	 * Verify if the first value attend to the objective when compared to the second
+	 * @param objective
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
 	public static boolean verifyObjective(String objective, float v1, float v2){
 		switch(objective){
 			case ">":
@@ -189,6 +237,12 @@ public class GoalManager {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param jsonGoals
+	 * @return
+	 * @throws Exception
+	 */
 	public static JSONArray cloneGoals(JSONArray jsonGoals) throws Exception{
 		
 		//perform the JSON Update goal for all elements of the JSONArray
@@ -200,6 +254,12 @@ public class GoalManager {
 		return jsonGoals;
 	}
 	
+	/**
+	 * 
+	 * @param goal
+	 * @return
+	 * @throws Exception
+	 */
 	public static JSONObject cloneGoal(JSONObject goal) throws Exception{
 		String frequency = goal.getString("frequency");
 		boolean hasFreuency = false;

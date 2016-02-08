@@ -16,7 +16,7 @@ public class App {
         if (String.valueOf(System.getenv("PORT")) != "null"){
             port_value=String.valueOf(System.getenv("PORT"));
         }
-        String port = ":"+port_value+"/";
+        String port = ":"+port_value+"/business";
         String hostname = InetAddress.getLocalHost().getHostAddress();
         if (hostname.equals("127.0.0.1"))
         {
@@ -24,7 +24,7 @@ public class App {
         }
         
 
-        URI BASE_URI = new URI(protocol + hostname + port+"business/");
+        URI BASE_URI = new URI(protocol + hostname + port+"/");
 
         System.out.println("Starting sdelab standalone HTTP server...");
         JdkHttpServerFactory.createHttpServer(BASE_URI, createApp());
