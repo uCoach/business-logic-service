@@ -44,8 +44,9 @@ public class User {
 		}
 		//Try to add the user
 		Response registerResponse = UserDataClient.registerUser( new JSONObject(requestBody));
-		
-		if(registerResponse.getStatus()==200){
+		//System.out.println(registerResponse.getStatus());
+		if(registerResponse.getStatus()==200 || registerResponse.getStatus()==202 ){
+			//System.out.println(registerResponse.getStatus());
 			String userJson = registerResponse.readEntity(String.class);
 			jsonParser.loadJson(userJson);
 			
@@ -54,6 +55,7 @@ public class User {
 			
 			Login login = new Login(username, password);
 			String token = login.getToken();
+			System.out.println(token);
 			JSONObject finalresponse = JSONBuilder.singleValueJsonResponse(new JSONObject(userJson), token, "token");
 			rs = Response.accepted(finalresponse.toString()).build();
 			return rs;

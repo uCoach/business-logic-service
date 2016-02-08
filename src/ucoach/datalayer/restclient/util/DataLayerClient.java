@@ -34,10 +34,20 @@ public class DataLayerClient {
 	public static Response fetchPostResponse(final WebTarget target, String mediaType, JSONObject json) {
 		
 		// Build request
-				Builder builder = target.request().accept(mediaType);
-				Authorization.authorizeRequest(builder);
-				// GET request
-				return builder.post(Entity.entity(json.toString(), mediaType));
+		Builder builder = target.request().accept(mediaType);
+		Authorization.authorizeRequest(builder);
+		// GET request
+		return builder.post(Entity.entity(json.toString(), mediaType));
+	}
+	
+	public static Response fetchPutResponse(final WebTarget target, String mediaType, JSONObject json){
+		// Build request
+		Builder builder = target.request().accept(mediaType);
+		Authorization.authorizeRequest(builder);
+		// GET request
+		//return builder.post(Entity.entity(json.toString(), mediaType));
+		return builder.put(Entity.entity(json.toString(), mediaType));
+		
 	}
 	
 

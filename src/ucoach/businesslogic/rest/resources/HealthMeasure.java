@@ -1,5 +1,7 @@
 package ucoach.businesslogic.rest.resources;
 
+import java.util.Date;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
@@ -13,7 +15,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.json.JSONObject;
+
+import ucoach.datalayer.restclient.HealthMeasureDataClient;
 import ucoach.util.Authorization;
+import ucoach.util.DatePatterns;
+import ucoach.util.JsonParser;
 
 public class HealthMeasure {
 	private int idUser;
@@ -82,26 +89,28 @@ public class HealthMeasure {
 	 * Verify the client authentication
 	 * Try to add the new HealthMeasure
 	 * @return the HealthMeasure into a JSON with its respective Id
+	 * @throws NumberFormatException 
 	 * @throws Exception 
 	 */
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON })
-	public Response postNewMeasure(@Context HttpHeaders headers, String body){
+	public Response postNewMeasure(@Context HttpHeaders headers, String body) throws NumberFormatException, Exception{
+		
 		Response response;
 		if(! Authorization.validateRequest(headers)){
 			response = Response.status(401).build();
 			return response;
 		}
-		
-		org.json.JSONObject obj = new org.json.JSONObject();
-		obj.put("idUser", idUser);
-		obj.put("idMeasure", 666);
-		obj.put("idType", 1);
-		obj.put("value", "1000");
-		obj.put("measurement", "Kg");		
-		response = Response.accepted(obj.toString()).build();	
-		
-		return response;
+		//int userId, int typeId, float value, Date createdDate
+		JsonParser jp = new JsonParser();
+		System.out.println("1");
+		jp.loadJson(body);
+		System.out.println("2");
+		int userId = idUser;
+		int typeId = Integer.parseInt(jp.getElement("typeId"));
+		float value = Float.parseFloat(jp.getElement("value"));
+		System.out.println("3");
+		return HealthMeasureDataClient.registerHealthMeasure(userId, typeId, value, new Date());			
 		
 	}
 	

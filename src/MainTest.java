@@ -1,3 +1,6 @@
+import java.util.Date;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import ucoach.businesslogic.rest.manager.GoalManager;
@@ -13,7 +16,9 @@ public  class MainTest {
 	
 	
 	public static void main(String[] args) throws Exception{
-		//System.out.println("bananada");
+		
+		
+		
 		//Authenticator at = new Authenticator();
 		//System.out.println(at.authenticate("abobora"));
 		
@@ -23,7 +28,12 @@ public  class MainTest {
 		//System.out.println(UserDataClient.getUserById(1));
 		//System.out.println(UserDataClient.getUserById(2));
 		//System.out.println(UserDataClient.getUserById(9999));
-		
+		//JSONObject jo = Pretender.getGoals();
+		//JSONArray ja = jo.getJSONArray("goals");
+		//System.out.println(ja);
+		//ja = GoalManager.updateGoals(ja);
+		//System.out.println(ja);
+		/*
 		String json = "{"+
 				  "\"firstname\": \"John\","+
 				  "\"lastname\": \"Snow\","+
@@ -34,6 +44,6 @@ public  class MainTest {
 				  "}";
 		JSONObject obj;
 		obj = new JSONObject(json);
-		System.out.println(UserDataClient.registerUser(obj));
+		System.out.println(UserDataClient.registerUser(obj));*/
 	}
 }

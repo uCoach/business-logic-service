@@ -27,11 +27,12 @@ public class Pretender {
 		//obj1.put("frequency", "daily");
 		obj1.put("objective", ">=");
 		obj1.put("value", "1000");
+		obj1.put("createdDate", "2016-03-05");
 		obj1.put("dueDate", "2016-03-01");
-		obj1.put("createdDate", "2016-02-05");
+		
 		obj1.put("achieved", 0);
-		obj1.put("hmType", 1);
-		obj1.put("user", 1);
+		obj1.put("hmType", 2);
+		obj1.put("user", 2);
 		
 		
 		org.json.JSONObject obj2 = new org.json.JSONObject();
@@ -39,11 +40,11 @@ public class Pretender {
 		obj2.put("frequency", "");
 		obj2.put("objective", ">");
 		obj2.put("value", "2000");
-		obj2.put("dueDate", "2016-03-01");
-		obj2.put("createdDate", "2016-02-05");
+		obj2.put("createdDate", "2016-03-05");
+		obj2.put("dueDate", "2016-03-01");		
 		obj2.put("achieved", 0);
-		obj2.put("hmType", 1);
-		obj2.put("user", 1);
+		obj2.put("hmType", 2);
+		obj2.put("user", 2);
 		
 		
 		List<JSONObject> objs = new ArrayList<JSONObject>();

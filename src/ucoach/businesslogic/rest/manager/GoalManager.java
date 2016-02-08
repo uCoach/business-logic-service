@@ -5,9 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import ucoach.datalayer.restclient.HealthMeasureDataClient;
 import ucoach.util.DatePatterns;
 import ucoach.util.JsonParser;
 
@@ -76,15 +79,15 @@ public class GoalManager {
 		 *  	-Check if the goals were achieved for yesterday
 		 *  	-Create a new goal with the createdDate for today
 		 */
-		String hmTypeName = "steps";
+		int hmTypeId = 2;
 		if(!hasFrequency){
-			reachedValue = getReachedValue(hmTypeName, user,  createdDate,  dueDate);
+			reachedValue = getReachedValue(hmTypeId, user,  createdDate,  dueDate);
 			System.out.println("DO NOT CREATE A NEW GOAL");
 		}else{
 			System.out.println("CREATE A NEW GOAL");
 			Date today = new Date();
 			Date yesterday = DatePatterns.getYesterdayDate();
-			reachedValue = getReachedValue(hmTypeName, user, createdDate, yesterday);				
+			reachedValue = getReachedValue(hmTypeId, user, yesterday, yesterday);				
 			/*
 			 * HERE COMES THE CREATING A NEW GOAL
 			 */
@@ -96,34 +99,37 @@ public class GoalManager {
 			/*
 			 * HERE COMES THE UPDATE TO THE DATABASE
 			 */								
-		}
+		}else{System.out.println("GOAL NOT ACHIEVED"); }
 		return goal;		
 	}
 	
-	public static float getReachedValue(String hmTypeName, int user, Date startDate, Date dueDate){		
+	public static float getReachedValue(int hmTypeId, int user, Date startDate, Date dueDate){		
 		/*
 		 * HERE COMES THE GET FOR THE hmTypeName
+		 * 2 = weight
+		 * 
 		 */
 		//get the hmType name
 			
 		//weight, steps, calories, 
-		switch (hmTypeName){
-			case "steps":
-				return sumMeasures(hmTypeName,user, startDate, dueDate);
-			case "km":
-				return sumMeasures(hmTypeName,user, startDate, dueDate);
-			case "weight":
-				return lastMeasure(hmTypeName,user, startDate, dueDate);
+		switch (hmTypeId){
+			case 4:
+				return sumMeasures(hmTypeId,user, startDate, dueDate);
+			case 3:
+				return sumMeasures(hmTypeId,user, startDate, dueDate);
+			case 2:
+				return lastMeasure(hmTypeId,user, startDate, dueDate);
 			
 		}
 		
 		return 0;
 	}
 	
-	public static float sumMeasures(String hmTypeName, int user, Date startDate, Date dueDate){
+	public static float sumMeasures(int hmTypeId, int user, Date startDate, Date dueDate){
 		//take the HealthMeasures from the hmType
-		JSONObject healthMeasuresJSON = Pretender.getHealthMeasureSteps();
-		JSONArray measures = healthMeasuresJSON.getJSONArray("measures");
+		Response r = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
+		//JSONObject healthMeasuresJSON = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
+		JSONArray measures = new JSONArray(r.toString());
 		float reachedValue = 0;
 		//for each measure
 		for(int j=0; j<measures.length(); j++){
@@ -140,10 +146,13 @@ public class GoalManager {
 		return reachedValue;
 	}
 	
-	public static float lastMeasure(String hmTypeName, int user, Date startDate, Date dueDate){
+	public static float lastMeasure(int hmTypeId, int user, Date startDate, Date dueDate){
 		//take the HealthMeasures from the hmType
-		JSONObject healthMeasuresJSON = Pretender.getHealthMeasureSteps();
-		JSONArray measures = healthMeasuresJSON.getJSONArray("measures");
+		
+		Response r = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
+		
+		System.out.println(r.toString());
+		JSONArray measures = new JSONArray(r.toString());
 		
 		//Take the last object and its value
 		JSONObject measure = measures.getJSONObject(measures.length()-1);		

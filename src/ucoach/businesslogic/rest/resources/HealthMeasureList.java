@@ -11,19 +11,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.json.JSONObject;
 
+import ucoach.datalayer.restclient.HealthMeasureDataClient;
 import ucoach.util.Authorization;
 
 public class HealthMeasureList {
-	private int id;
+	private int userid;
 	private int measureTypeId;
 	HttpHeaders headers;
 	
-	public HealthMeasureList(int id, int measureTypeId){
-		this.id = id;
+	public HealthMeasureList(int userid, int measureTypeId){
+		this.userid = userid;
 		this.measureTypeId = measureTypeId;
 	}
-	public HealthMeasureList(int id){
-		this.id = id;
+	public HealthMeasureList(int userid){
+		this.userid = userid;
 		this.measureTypeId = 0;
 		
 	}
@@ -43,32 +44,9 @@ public class HealthMeasureList {
 			response = Response.status(401).build();
 			return response;
 		}
+			
+		response = HealthMeasureDataClient.getHealthMeasures(userid, measureTypeId, null, null);				
 		
-		if(measureTypeId==0){
-			org.json.JSONObject obj = new org.json.JSONObject();
-			obj.put("user", id);
-			obj.put("idType", 12);
-			obj.put("value", "99");
-			obj.put("measurement", "Kg");
-			org.json.JSONObject obj2 = new org.json.JSONObject();
-			obj2.put("user", id);
-			obj2.put("idType", "weight");
-			obj2.put("value", "1000");
-			obj2.put("measurement", "BPM");			
-			List<JSONObject> ljs = new ArrayList();
-			ljs.add(obj);
-			ljs.add(obj2);
-			JSONObject objs = new org.json.JSONObject();
-			objs.put("Measures", ljs);			
-			response = Response.accepted(objs.toString()).build();				
-		}else{
-			org.json.JSONObject obj = new org.json.JSONObject();
-			obj.put("user", id);
-			obj.put("type", measureTypeId);
-			obj.put("value", "1000");
-			obj.put("measurement", "BPM");		
-			response = Response.accepted(obj.toString()).build();					
-		}
 		return response;
 		
 	}

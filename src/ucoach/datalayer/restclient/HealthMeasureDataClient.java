@@ -18,6 +18,7 @@ public class HealthMeasureDataClient {
 	 * Receive the variables and returns an Response object with the created Measure 
 	 * */
 	public static Response registerHealthMeasure(int userId, int typeId, float value, Date createdDate) throws Exception{	
+		
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget
 				.path("measure");
@@ -26,7 +27,7 @@ public class HealthMeasureDataClient {
 		measureJson.put("userId", userId);
 		measureJson.put("type", typeId);
 		measureJson.put("value", value);
-		measureJson.put("createdDate", created);
+		measureJson.put("createdDate", created);		
 		try{
 			Response r = DataLayerClient.fetchPostResponse(target, "application/json", measureJson);
 			return r;
@@ -41,21 +42,22 @@ public class HealthMeasureDataClient {
 	 * */
 	public static Response getHealthMeasures(int userId, int typeId, Date fromDate, Date toDate){
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
-		String getFromTo = "";
-		if(fromDate != null){
-			getFromTo = "?fromDate="+DatePatterns.dateFormater(fromDate);
-			if(toDate != null)
-				getFromTo += "&toDate="+DatePatterns.dateFormater(toDate);
-		}
+		String getFromTo = "";		
 		WebTarget target = baseTarget
 				.path("measure")
 				.path("type")
 				.path(typeId+"")
 				.path("user")
-				.path(userId+getFromTo);
+				.path(userId+"");
+		if(fromDate != null){
+			target = target.queryParam("fromDate", DatePatterns.dateFormater(fromDate));
+				if(toDate != null)
+					target = target.queryParam("toDate", DatePatterns.dateFormater(toDate));
+		}
+		System.out.println(target);
 		try{
 			Response r = DataLayerClient.fetchGetResponse(target, "application/json");
-			System.out.println(r);
+			//System.out.println(r);
 			return r;
 		}catch(Exception ex){
 			return null;
