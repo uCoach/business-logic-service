@@ -7,6 +7,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -143,12 +144,12 @@ public class User {
 	 * @throws Exception 
 	 */
 	@Path("goalslist")
-	public GoalList getGoalsByType(@Context HttpHeaders headers) throws Exception {
+	public GoalList getGoalsByType(@QueryParam("achieved") String achieved, @Context HttpHeaders headers) throws Exception {
 
 		// Get userId by token
 		String userToken = headers.getHeaderString("User-Authorization");
 		int userId = (int) Authenticator.authenticate(userToken);
 
-		return new GoalList(userId);
+		return new GoalList(userId, achieved);
 	}
 }

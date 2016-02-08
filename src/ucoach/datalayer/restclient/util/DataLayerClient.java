@@ -19,11 +19,6 @@ import ucoach.util.JsonParser;
 
 public class DataLayerClient {
 	
-	private static JSONObject getUserById(long id){
-		
-		return null;
-	}
-	
 	public static WebTarget getWebTarget(){
 		ClientConfig config = new ClientConfig().register(new JacksonFeature());
 		Client client = ClientBuilder.newClient(config);		
@@ -39,7 +34,7 @@ public class DataLayerClient {
 		// GET request
 		return builder.post(Entity.entity(json.toString(), mediaType));
 	}
-	
+
 	public static Response fetchPutResponse(final WebTarget target, String mediaType, JSONObject json){
 		// Build request
 		Builder builder = target.request().accept(mediaType);
@@ -47,9 +42,7 @@ public class DataLayerClient {
 		// GET request
 		//return builder.post(Entity.entity(json.toString(), mediaType));
 		return builder.put(Entity.entity(json.toString(), mediaType));
-		
 	}
-	
 
 	/*
 	 * Include the authorization information
@@ -63,6 +56,6 @@ public class DataLayerClient {
 	}
 	
 	private static URI getBaseURI() {
-        return UriBuilder.fromUri(ServiceVars.DATA_LAYER_ADDRESS).build();
-    }
+    return UriBuilder.fromUri(ServiceVars.DATA_LAYER_ADDRESS).build();
+  }
 }

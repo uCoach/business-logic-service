@@ -12,15 +12,21 @@ import ucoach.util.Authorization;
 
 public class GoalList {
 	int userId;
+	String achieved;
 	
-	public GoalList(int userId){
+	/**
+	 * 
+	 * @param userId
+	 * @param achieved
+	 */
+	public GoalList(int userId, String achieved) {
 		this.userId = userId;
+		this.achieved = achieved;
 	}
-	
 	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON })
-	public Response getGoalsList(@Context HttpHeaders headers){
+	public Response getGoalsList(@Context HttpHeaders headers) {
 		if(! Authorization.validateRequest(headers)){
 			return  Response.status(401).build();
 		}
@@ -29,6 +35,6 @@ public class GoalList {
 			return Response.status(401).build();
 		}
 
-		return GoalDataClient.getGoalsFromUser(userId, null, null);
+		return GoalDataClient.getGoalsFromUser(userId, null, achieved);
 	}
 }
