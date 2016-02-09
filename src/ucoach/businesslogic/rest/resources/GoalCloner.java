@@ -53,7 +53,7 @@ public class GoalCloner {
 			Response res = GoalDataClient.getDailyGoalsFromUser(userId, yesterday, null);		
 			if (res.getStatus() != 200 && res.getStatus() != 202) throw new Exception();
 			
-			JSONArray goals = GoalManager.cloneDailyGoals(new JSONArray(res.readEntity(String.class)));
+			JSONArray goals = GoalManager.cloneDailyGoals(new JSONArray(res.readEntity(String.class)), this.userId);
 			return Response.accepted(goals.toString()).build();
 
 		}catch(Exception e){

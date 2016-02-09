@@ -55,7 +55,7 @@ public class GoalDataClient {
 			target = target.queryParam("dueDateFrom", DatePatterns.dateFormater(from));
 		}
 
-		if (achieved.equals("true") || achieved.equals("false")) {
+		if (achieved != null && (achieved.equals("true") || achieved.equals("false"))) {
 			target = target.queryParam("achieved", achieved);
 		}
 
@@ -78,7 +78,7 @@ public class GoalDataClient {
 				.path("daily")
 				.path(dueDate);		
 
-		if (achieved.equals("true") || achieved.equals("false")) {
+		if (achieved != null && (achieved.equals("true") || achieved.equals("false"))) {
 			target = target.queryParam("achieved", achieved);
 		}
 

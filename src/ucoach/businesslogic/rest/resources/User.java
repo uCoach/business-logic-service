@@ -154,7 +154,7 @@ public class User {
 	 * @throws Exception 
 	 */
 	@Path("goal")
-	public Goal getGoal(@Context HttpHeaders headers) throws Exception {
+	public Goal newGoal(@Context HttpHeaders headers) throws Exception {
 		
 		// Get userId by token
 		String userToken = headers.getHeaderString("User-Authorization");
@@ -185,7 +185,7 @@ public class User {
 		// Get userId by token
 		String userToken = headers.getHeaderString("User-Authorization");
 		int userId = (int) Authenticator.authenticate(userToken);
-
+		
 		return new GoalList(userId, achieved);
 	}
 }

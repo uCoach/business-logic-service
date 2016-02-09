@@ -238,18 +238,18 @@ public class GoalManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public static JSONArray cloneDailyGoals(JSONArray jsonGoals) throws Exception {
+	public static JSONArray cloneDailyGoals(JSONArray jsonGoals, int userId) throws Exception {
 		
 		JSONArray newGoals = new JSONArray();
 
 		//perform the JSON Update goal for all elements of the JSONArray
 		for (int i = 0; i < jsonGoals.length(); i++) {
 			try {
-				JSONObject goal = cloneDailyGoal(jsonGoals.getJSONObject(i));
+				JSONObject goal = cloneDailyGoal(jsonGoals.getJSONObject(i), userId);
 				newGoals.put(i, goal);
 
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
+				System.out.println("EXCEPTION: " + e.getMessage());
 				continue;
 			}
 		}
@@ -263,14 +263,28 @@ public class GoalManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public static JSONObject cloneDailyGoal(JSONObject goal) throws Exception {
+	public static JSONObject cloneDailyGoal(JSONObject goal, int userId) throws Exception {
 
 		Date today = new Date();
-		goal.put("achieved", 0);
-		goal.put("createdDate", DatePatterns.dateFormater(today));
-		goal.put("dueDate", DatePatterns.dateFormater(today));
-		Response res = GoalDataClient.registerGoal(goal);
-		if (res.getStatus() != 200 && res.getStatus() != 202 && res.getStatus() != 201) throw new Exception();
+		JSONObject newGoal = new JSONObject();
+		JsonParser parser = new JsonParser();
+		parser.loadJson(goal.toString());
+
+		newGoal.put("frequency", "daily");
+		newGoal.put("createdDate", DatePatterns.dateFormater(today));
+		newGoal.put("dueDate", DatePatterns.dateFormater(today));
+		
+		String hmTypeId = parser.getElement("hmType/id");
+		String objective = parser.getElement("objective");
+		String value = parser.getElement("value");
+		newGoal.put("measureType", hmTypeId);
+		newGoal.put("objective", objective);
+		newGoal.put("value", value);
+		newGoal.put("userId", Integer.toString(userId));
+
+		Response res = GoalDataClient.registerGoal(newGoal);
+		if (res.getStatus() != 200 && res.getStatus() != 202 && res.getStatus() != 201)
+			throw new Exception("Response returned: " + res.readEntity(String.class));
 
 		return new JSONObject(res.readEntity(String.class));
 	}
