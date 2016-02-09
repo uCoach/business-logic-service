@@ -47,12 +47,16 @@ public class GoalManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public JSONArray updateGoals(JSONArray jsonGoals) throws Exception{
+	public JSONArray updateGoals(JSONArray jsonGoals) {
+		
 		//perform the JSON Update goal for all elements of the JSONArray
-		for(int i = 0; i<jsonGoals.length(); i++){
-			JSONObject goal = jsonGoals.getJSONObject(i);
-			goal = updateGoal(goal);
-			jsonGoals.put(i, goal);
+		for (int i = 0; i < jsonGoals.length(); i++) {
+			try {
+				JSONObject goal = updateGoal(jsonGoals.getJSONObject(i));
+				jsonGoals.put(i, goal);
+			} catch (Exception e) {
+				continue;
+			}
 		}
 		return jsonGoals;
 	}
@@ -63,42 +67,48 @@ public class GoalManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public JSONObject updateGoal(JSONObject goal) throws Exception{							
+	public JSONObject updateGoal(JSONObject goal) throws Exception {							
 		//Initialize the variables
-		System.out.println("1");
 		Date createdDate = DatePatterns.dateParser(goal.getString("createdDate"));
 		Date dueDate = DatePatterns.dateParser(goal.getString("dueDate"));
-		int user = userId;		
+		int user = userId;
+		int goalId = goal.getInt("id");
+
 		JSONObject hmTypeJson = goal.getJSONObject("hmType");
 		int hmType = hmTypeJson.getInt("id");
-		float reachedValue = 0;
+
 		//getting the objective (>,<,>=,...)
 		String objective = goal.getString("objective");
 		
 		//getting the actual goal value
-		float goalValue = 0;
-		try{
-			goalValue = goal.getLong ("value");
-		}catch(Exception e){
-			System.out.println("exception float parsing[2]");
-			try{
-				goalValue = goal.getInt("value");
-			}catch(Exception e2){
-				System.out.println("exception float parsing[3]");
-			}
-		}		
-		reachedValue = getReachedValue(hmType, user,  createdDate,  dueDate);
+		float goalValue = getFloat(goal, "value");
+		float reachedValue = getReachedValue(hmType, user,  createdDate,  dueDate);
+
 		//Verifying the objective, if so, update the goal to achieved
-		if(verifyObjective(objective, reachedValue, goalValue)){
+		if (verifyObjective(objective, reachedValue, goalValue)) {
 			goal.put("achieved", 1);				
-			System.out.println("ACHIEVED GOAL");
-			/*
-			 * HERE COMES THE UPDATE TO THE DATABASE
-			 */								
-		}else{System.out.println("GOAL NOT ACHIEVED"); }
+
+			// Persist to database
+			GoalDataClient.setGoalAsAchieved(goalId);
+		}
+		
 		return goal;		
 	}
-	
+
+	/**
+	 * Helper method to parse goal and get value
+	 * @param goal
+	 * @return
+	 * @throws Exception
+	 */
+	private static float getFloat(JSONObject goal, String expr) throws Exception {
+		JsonParser parser = new JsonParser();
+		parser.loadJson(goal.toString());
+		
+		String value = parser.getElement(expr);
+		return Float.parseFloat(value);
+	}
+
 	/**
 	 * 
 	 * @param hmTypeId
@@ -106,8 +116,9 @@ public class GoalManager {
 	 * @param startDate
 	 * @param dueDate
 	 * @return
+	 * @throws Exception 
 	 */
-	public static float getReachedValue(int hmTypeId, int user, Date startDate, Date dueDate){		
+	public static float getReachedValue(int hmTypeId, int user, Date startDate, Date dueDate) throws Exception {		
 		/*
 		 * HERE COMES THE GET FOR THE hmTypeName
 		 * '1', 'weight', 'kg'
@@ -121,7 +132,7 @@ public class GoalManager {
 		 * '9', 'sleeping', 'hours'
 		 * 
 		 */
-		 
+
 		switch (hmTypeId){
 			case 1: //reach a weight x
 				return lastMeasure(hmTypeId,user, startDate, dueDate);
@@ -143,7 +154,7 @@ public class GoalManager {
 				return sumMeasures(hmTypeId,user, startDate, dueDate);				
 		}
 		
-		return 0;
+		throw new Exception("Measure type " + hmTypeId + " not supported");
 	}
 	
 	/**
@@ -153,31 +164,25 @@ public class GoalManager {
 	 * @param startDate
 	 * @param dueDate
 	 * @return
+	 * @throws Exception  
 	 */
-	public static float sumMeasures(int hmTypeId, int user, Date startDate, Date dueDate){
+	public static float sumMeasures(int hmTypeId, int user, Date startDate, Date dueDate) throws Exception {
 		//take the HealthMeasures from the hmType
-		Response r = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
+		Response res = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
+		if (res.getStatus() != 200 && res.getStatus() != 202) throw new Exception();
+
 		//JSONObject healthMeasuresJSON = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
-		JSONArray measures = new JSONArray(r.readEntity(String.class));
+		JSONArray measures = new JSONArray(res.readEntity(String.class));
+
+		if (measures.length() == 0) throw new Exception();
+
 		float reachedValue = 0;
-		//for each measure
-		if (measures.length()==0)
-			return 0;
-		for(int j=0; j<measures.length(); j++){
+		for(int j = 0; j < measures.length(); j++){
 			JSONObject measure = measures.getJSONObject(j);
 			
-			//take the value of the measure and sum to the totalValue
-			
-			try{ 
-				reachedValue += measure.getLong("value");				
-			}catch(Exception e){
-				System.out.println("exception float parsing");
-				try{
-					reachedValue += measure.getInt("value");
-				}catch(Exception ex){}
-				
-			}
+			reachedValue += getFloat(measure, "value");				
 		}
+
 		return reachedValue;
 	}
 	
@@ -188,32 +193,21 @@ public class GoalManager {
 	 * @param startDate
 	 * @param dueDate
 	 * @return
+	 * @throws Exception 
 	 */
-	public static float lastMeasure(int hmTypeId, int user, Date startDate, Date dueDate){
+	public static float lastMeasure(int hmTypeId, int user, Date startDate, Date dueDate) throws Exception {
 		//take the HealthMeasures from the hmType
-		Response r = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
+		Response res = HealthMeasureDataClient.getHealthMeasures(user, hmTypeId, startDate, dueDate);
+		if (res.getStatus() != 200 && res.getStatus() != 202) throw new Exception();
 		
-		JSONArray measures = new JSONArray(r.readEntity(String.class));
-		//Take the last object and its value
-		if (measures.length()==0)
-			return 0;
-		JSONObject measure = measures.getJSONObject(measures.length()-1);		
-		Float value;
-		try{ 
-			value = (float) measure.getLong("value");
-			return value;
-		}catch(Exception e){
-			System.out.println("exception float parsing");
-			try{
-				value = (float) measure.getInt("value");
-				return value;
-			}catch(Exception ex){}
-			
-			
-		}		
-		return 0;
+		JSONArray measures = new JSONArray(res.readEntity(String.class));
+		
+		if (measures.length() == 0) throw new Exception();
+
+		JSONObject measure = measures.getJSONObject(measures.length() - 1);		
+		return getFloat(measure, "value");
 	}
-	
+
 	/**
 	 * Verify if the first value attend to the objective when compared to the second
 	 * @param objective
@@ -222,19 +216,20 @@ public class GoalManager {
 	 * @return
 	 */
 	public static boolean verifyObjective(String objective, float v1, float v2){
-		switch(objective){
+		switch (objective) {
 			case ">":
-				return (v1>v2);				
+				return (v1 > v2);				
 			case ">=":
-				return (v1>=v2);
+				return (v1 >= v2);
 			case "<":
-				return(v1<v2);
+				return(v1 < v2);
 			case "<=":
-				return(v1<=v2);
+				return(v1 <= v2);
 			case "=":
-				return (v1==v2);
+				return (v1 == v2);
+			default:
+				return false;
 		}
-		return false;
 	}
 	
 	/**
@@ -260,7 +255,7 @@ public class GoalManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public static JSONObject cloneGoal(JSONObject goal) throws Exception{
+	public static JSONObject cloneGoal(JSONObject goal) throws Exception {
 		String frequency = goal.getString("frequency");
 		boolean hasFreuency = false;
 		goal.put("achieved", 0);

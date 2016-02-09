@@ -28,7 +28,7 @@ public class GoalDataClient {
 	}
 	
 	/*Register a new goal changing the Dates*/
-	public static Response RegisterAndChangeDate(JSONObject goalJson, Date created, Date due) throws Exception{
+	public static Response RegisterAndChangeDate(JSONObject goalJson, Date created, Date due) throws Exception {
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget
 				.path("goal");
@@ -64,26 +64,23 @@ public class GoalDataClient {
 	 * GEt the goals from a user from one certain due date
 	 * achieved can assume the values of "true" and "false"
 	 * */	
-	public static Response getGoalsFromUser(int userid, Date from, String achieved){
+	public static Response getGoalsFromUser(int userid, Date from, String achieved) {
+
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget
 				.path("goal")
 				.path("user")
 				.path(userid+"");
-		if(from != null){
+
+		if (from != null){
 			target = target.queryParam("dueDateFrom", DatePatterns.dateFormater(from));
 		}
-		System.out.println(target);
-		if(achieved != null){
-			if (achieved != "true" && achieved!="false")
-				return Response.status(400).build();
+
+		if (achieved.equals("true") || achieved.equals("false")) {
 			target = target.queryParam("achieved", achieved);
 		}	
-		try{			
-			return DataLayerClient.fetchGetResponse(target, "application/json");			
-		}catch(Exception ex){
-			return Response.status(500).build();
-		}		
+
+		return DataLayerClient.fetchGetResponse(target, "application/json");
 	}
 	
 	/*
@@ -91,7 +88,8 @@ public class GoalDataClient {
 	 * achieved can assume true or false or null
 	 * 
 	 * */
-	public static Response getDailyGoalsFromUser(int userid, Date from, String achieved){
+	public static Response getDailyGoalsFromUser(int userid, Date from, String achieved) {
+
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		String dueDate = DatePatterns.dateFormater(from);
 		WebTarget target = baseTarget

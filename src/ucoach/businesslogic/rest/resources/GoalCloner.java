@@ -37,7 +37,7 @@ public class GoalCloner {
 	 * */
 	@GET
 	@Produces({MediaType.APPLICATION_JSON })
-	 public Response updateGoals(@Context HttpHeaders headers) throws Exception {
+	 public Response cloneGoals(@Context HttpHeaders headers) throws Exception {
 
 		if(! Authorization.validateRequest(headers)){
 			return  Response.status(401).build();

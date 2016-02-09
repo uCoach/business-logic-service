@@ -40,9 +40,9 @@ public class HealthMeasureDataClient {
 	 * Receive the information for the get (fromDate and toDate can be null)
 	 * performs a query on the data layer and return it into a Response object
 	 * */
-	public static Response getHealthMeasures(int userId, int typeId, Date fromDate, Date toDate){
+	public static Response getHealthMeasures(int userId, int typeId, Date fromDate, Date toDate) {
+		
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
-		String getFromTo = "";		
 		WebTarget target = baseTarget
 				.path("measure")
 				.path("type")
@@ -50,20 +50,13 @@ public class HealthMeasureDataClient {
 				.path("user")
 				.path(userId+"");
 		
-		
-		if(fromDate != null){
+		// Define query params
+		if (fromDate != null) {
 			target = target.queryParam("fromDate", DatePatterns.dateFormater(fromDate));
 				if(toDate != null)
 					target = target.queryParam("toDate", DatePatterns.dateFormater(toDate));
 		}
-		System.out.println(target);
-		try{			
-			Response r = DataLayerClient.fetchGetResponse(target, "application/json");
-			return r;
-		}catch(Exception ex){
-			return Response.status(500).build();
-		}
+	
+		return DataLayerClient.fetchGetResponse(target, "application/json");
 	}
-	
-	
 }

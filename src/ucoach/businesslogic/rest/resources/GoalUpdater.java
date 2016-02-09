@@ -49,22 +49,27 @@ public class GoalUpdater {
 			return Response.status(401).build();
 		}
 
-		JSONArray goals;		
-		Date date = DatePatterns.dateParser(dateFrom);
+			
+		Date date = (dateFrom != null) ? DatePatterns.dateParser(dateFrom) : null;
 		GoalManager goalmng = new GoalManager(userId);
-		try{			
-			Response r = GoalDataClient.getGoalsFromUser(userId, date, "false");			
-			try{
-				goals = new JSONArray(r.readEntity(String.class));
-			}catch(Exception e){
-				return null;
-			}
-			System.out.println(goals);
+		
+		Response res;
+		try {
+			res = GoalDataClient.getGoalsFromUser(userId, date, "false");	
+			if (res.getStatus() != 200 && res.getStatus() != 202) throw new Exception();
+
+		} catch(Exception ex) {
+			System.out.println(ex.getMessage());
+			return Response.status(500).build();
+		}		
+		
+		JSONArray goals = new JSONArray(res.readEntity(String.class));
+
+		try {
 			goals = goalmng.updateGoals(goals);
-			System.out.println(goals);
-		}catch(Exception e){
-			System.out.println(e);
-			return Response.status(400).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(500).build();
 		}
 		
 		return Response.accepted(goals.toString()).build();
