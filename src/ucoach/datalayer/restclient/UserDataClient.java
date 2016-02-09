@@ -107,7 +107,7 @@ static JsonParser jsonParser = new JsonParser();
 	protected static void parseResponseStatus(Response response) throws Exception {
 		// Parse status
 		int status = response.getStatus();
-		if (!(status == 200 || status == 201 || status == 202 || status == 204)) {
+		if (status == 500) {
 			System.out.println("External Error: response returned " + status);
 			System.out.println(response.readEntity(String.class));
 			throw new Exception("External Error: response returned " + status);
