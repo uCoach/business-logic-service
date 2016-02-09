@@ -20,26 +20,8 @@ public class GoalDataClient {
 		WebTarget baseTarget = DataLayerClient.getWebTarget();
 		WebTarget target = baseTarget
 				.path("goal");
-		try{
-			return DataLayerClient.fetchPostResponse(target, "application/json", goalJson);
-		}catch(Exception ex){
-			return Response.status(500).build();
-		}		
-	}
-	
-	/*Register a new goal changing the Dates*/
-	public static Response RegisterAndChangeDate(JSONObject goalJson, Date created, Date due) throws Exception {
-		WebTarget baseTarget = DataLayerClient.getWebTarget();
-		WebTarget target = baseTarget
-				.path("goal");
-		
-		goalJson.put("createdDate", DatePatterns.dateFormater(created));
-		goalJson.put("dueDate", DatePatterns.dateFormater(due));
-		try{
-			return DataLayerClient.fetchPostResponse(target, "application/json", goalJson);
-		}catch(Exception ex){
-			return Response.status(500).build();
-		}		
+
+	  return DataLayerClient.fetchPostResponse(target, "application/json", goalJson);	
 	}
 	
 	/*
@@ -53,11 +35,8 @@ public class GoalDataClient {
 				.path("goal")
 				.path(goalId+"")
 				.path("achieved");
-		try{
-			return DataLayerClient.fetchPutResponse(target, "application/json", new JSONObject("{}"));
-		}catch(Exception ex){
-			return Response.status(500).build();
-		}
+
+		return DataLayerClient.fetchPutResponse(target, "application/json", new JSONObject("{}"));
 	}
 	
 	/*
@@ -78,7 +57,7 @@ public class GoalDataClient {
 
 		if (achieved.equals("true") || achieved.equals("false")) {
 			target = target.queryParam("achieved", achieved);
-		}	
+		}
 
 		return DataLayerClient.fetchGetResponse(target, "application/json");
 	}
@@ -95,18 +74,14 @@ public class GoalDataClient {
 		WebTarget target = baseTarget
 				.path("goal")
 				.path("user")
-				.path(userid+"")
+				.path(userid + "")
 				.path("daily")
 				.path(dueDate);		
-		if(achieved != null){
-			if (achieved != "true" && achieved!="false")
-				return Response.status(400).build();
+
+		if (achieved.equals("true") || achieved.equals("false")) {
 			target = target.queryParam("achieved", achieved);
-		}		
-		try{
-			return DataLayerClient.fetchGetResponse(target, "application/json");
-		}catch(Exception ex){
-			return Response.status(500).build();
-		}		
+		}
+
+		return DataLayerClient.fetchGetResponse(target, "application/json");	
 	}
 }

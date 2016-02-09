@@ -47,20 +47,18 @@ public class GoalCloner {
 			return Response.status(401).build();
 		}
 
-		JSONArray goals; new JSONArray();		
 		Date yesterday = DatePatterns.getYesterdayDate();
-		GoalManager goalmng = new GoalManager(userId);
+
 		try{						
-			Response r = GoalDataClient.getDailyGoalsFromUser(userId, yesterday, null);			
-			goals = new JSONArray(r.readEntity(String.class));
+			Response res = GoalDataClient.getDailyGoalsFromUser(userId, yesterday, null);		
+			if (res.getStatus() != 200 && res.getStatus() != 202) throw new Exception();
 			
-			goals = goalmng.cloneGoals(goals);
-		
+			JSONArray goals = GoalManager.cloneDailyGoals(new JSONArray(res.readEntity(String.class)));
+			return Response.accepted(goals.toString()).build();
+
 		}catch(Exception e){
-			System.out.println(e);
-			return Response.status(400).build();
+			System.out.println(e.getMessage());
+			return Response.status(500).build();
 		}
-		
-		return Response.accepted(goals.toString()).build();
 	}
 }

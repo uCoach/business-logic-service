@@ -238,15 +238,23 @@ public class GoalManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public static JSONArray cloneGoals(JSONArray jsonGoals) throws Exception{
+	public static JSONArray cloneDailyGoals(JSONArray jsonGoals) throws Exception {
 		
+		JSONArray newGoals = new JSONArray();
+
 		//perform the JSON Update goal for all elements of the JSONArray
-		for(int i = 0; i<jsonGoals.length(); i++){
-			JSONObject goal = jsonGoals.getJSONObject(i);
-			goal = cloneGoal(goal);
-			jsonGoals.put(i, goal);
+		for (int i = 0; i < jsonGoals.length(); i++) {
+			try {
+				JSONObject goal = cloneDailyGoal(jsonGoals.getJSONObject(i));
+				newGoals.put(i, goal);
+
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				continue;
+			}
 		}
-		return jsonGoals;
+
+		return newGoals;
 	}
 	
 	/**
@@ -255,18 +263,15 @@ public class GoalManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public static JSONObject cloneGoal(JSONObject goal) throws Exception {
-		String frequency = goal.getString("frequency");
-		boolean hasFreuency = false;
-		goal.put("achieved", 0);
-		frequency = goal.getString("frequency");
-		if (!frequency.equalsIgnoreCase("daily"))
-			return goal;
+	public static JSONObject cloneDailyGoal(JSONObject goal) throws Exception {
+
 		Date today = new Date();
-		GoalDataClient.RegisterAndChangeDate(goal, today, today);
-		
-		return goal;
+		goal.put("achieved", 0);
+		goal.put("createdDate", DatePatterns.dateFormater(today));
+		goal.put("dueDate", DatePatterns.dateFormater(today));
+		Response res = GoalDataClient.registerGoal(goal);
+		if (res.getStatus() != 200 && res.getStatus() != 202 && res.getStatus() != 201) throw new Exception();
+
+		return new JSONObject(res.readEntity(String.class));
 	}
-	
-	
 }
