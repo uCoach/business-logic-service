@@ -26,9 +26,10 @@ static JsonParser jsonParser = new JsonParser();
 		WebTarget target = baseTarget
 				.path("user");
 		try{
-			return DataLayerClient.fetchPostResponse(target, "application/json", userJson);
-			
-		}catch(Exception ex){
+			Response response = DataLayerClient.fetchPostResponse(target, "application/json", userJson);
+			parseResponseStatus(response);
+			return response;
+		} catch(Exception ex) {
 			return null;
 		}		
 	}
@@ -46,8 +47,9 @@ static JsonParser jsonParser = new JsonParser();
 				.path(id+"");
 				
 		try{
-			return DataLayerClient.fetchGetResponse(target, "application/json");
-
+			Response response = DataLayerClient.fetchGetResponse(target, "application/json");
+			parseResponseStatus(response);
+			return response;
 		}catch(Exception ex){
 			return null;
 		}		
@@ -65,11 +67,11 @@ static JsonParser jsonParser = new JsonParser();
 				.path("user")
 				.path("email")
 				.path(email);
-		try{
-			Response r = DataLayerClient.fetchGetResponse(target, "application/json");
-			System.out.println(r);
-			return r;
-		}catch(Exception ex){
+		try {
+			Response response = DataLayerClient.fetchGetResponse(target, "application/json");
+			parseResponseStatus(response);
+			return response;
+		} catch(Exception ex) {
 			return null;
 		}
 	}
@@ -88,12 +90,27 @@ static JsonParser jsonParser = new JsonParser();
 				.path("google")
 				.path("authorization");
 
-		try{
-			Response r = DataLayerClient.fetchGetResponse(target, "application/json");
-			System.out.println(r);
-			return r;
-		}catch(Exception ex){
+		try {
+			Response response = DataLayerClient.fetchGetResponse(target, "application/json");
+			parseResponseStatus(response);
+			return response;
+		} catch(Exception ex) {
 			return null;
+		}
+	}
+	
+	/**
+	 * Parse response status
+	 * @param response
+	 * @throws Exception
+	 */
+	protected static void parseResponseStatus(Response response) throws Exception {
+		// Parse status
+		int status = response.getStatus();
+		if (!(status == 200 || status == 201 || status == 202 || status == 204)) {
+			System.out.println("External Error: response returned " + status);
+			System.out.println(response.readEntity(String.class));
+			throw new Exception("External Error: response returned " + status);
 		}
 	}
 }

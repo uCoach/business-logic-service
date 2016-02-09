@@ -40,32 +40,15 @@ public class User {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON })
 	public Response registerUser(@Context HttpHeaders headers, String requestBody) throws Exception{
-		Response rs;
-		if(! Authorization.validateRequest(headers)){
-			rs = Response.status(401).build();
-			return rs;
+
+		if(! Authorization.validateRequest(headers)) {
+			return Response.status(401).build();
 		}
-		//Try to add the user
-		Response registerResponse = UserDataClient.registerUser( new JSONObject(requestBody));
-		
-		if(registerResponse.getStatus()==200 || registerResponse.getStatus()==202 ){
-			
-			String userJson = registerResponse.readEntity(String.class);
-			jsonParser.loadJson(userJson);
-			
-			String username = jsonParser.getElement("email");
-			String password = jsonParser.getElement("password");
-			
-			Login login = new Login(username, password);
-			String token = login.getToken();
-			System.out.println(token);
-			JSONObject finalresponse = JSONBuilder.singleValueJsonResponse(new JSONObject(userJson), token, "token");
-			rs = Response.accepted(finalresponse.toString()).build();
-			return rs;
-			
-		}else{
-			return registerResponse;
-		}
+
+		Response response = UserDataClient.registerUser(new JSONObject(requestBody));
+		if (response == null) return Response.status(500).build();		
+
+		return Response.ok(response.toString()).build();
 	}
 	
 	/**
@@ -109,11 +92,8 @@ public class User {
 		
 		// Parser response
 		String jsonResponse = r.readEntity(String.class);
-		JsonParser parser = new JsonParser();
-		parser.loadJson(jsonResponse);
-		String url = parser.getElement("location");
 		
-		return Response.seeOther(UriBuilder.fromUri(url).build()).build();
+		return Response.ok(jsonResponse).build();
 	}
 
 	/**
