@@ -45,10 +45,7 @@ public class User {
 			return Response.status(401).build();
 		}
 
-		Response response = UserDataClient.registerUser(new JSONObject(requestBody));
-		if (response == null) return Response.status(500).build();		
-
-		return Response.ok(response.toString()).build();
+		return UserDataClient.registerUser(new JSONObject(requestBody));
 	}
 	
 	/**
