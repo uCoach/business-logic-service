@@ -204,7 +204,7 @@ public class GoalManager {
 		
 		if (measures.length() == 0) throw new Exception();
 
-		JSONObject measure = measures.getJSONObject(measures.length() - 1);		
+		JSONObject measure = measures.getJSONObject(0);		
 		return getFloat(measure, "value");
 	}
 
